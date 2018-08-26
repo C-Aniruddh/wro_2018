@@ -16,9 +16,11 @@ angle_2 = 85
 angle_3 = 0
 
 position_home = {'first' : 60, 'second' : 70, 'third' : 90, 'fourth' : 0}
-position_pre_grip = {'first' : 0, 'second' : 87, 'third' : 90, 'fourth' : 0}
-position_grip = {'first' : 0, 'second' : 100, 'third' : 90, 'fourth' : 0}
-position_example = {'first' : 130, 'second' : 0, 'third' : 90, 'fourth' : 0}
+position_pre_grip = {'first' : 0, 'second' : 100, 'third' : 85, 'fourth' : 0}
+position_grip = {'first' : -15, 'second' : 100, 'third' : 85, 'fourth' : 90}
+position_lift = {'first' : 70, 'second' : 115, 'third' : 85, 'fourth' : 90}
+position_place = {'first' : 150, 'second' : 20, 'third' : 85, 'fourth' : 0}
+position_drop = {'first' : 160, 'second' : 0, 'third' : 85, 'fourth' : 0}
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
@@ -72,6 +74,8 @@ def actuate_to_position(position_dict):
     time.sleep(0.1)
     actuate(range_1, 0)
     time.sleep(0.1)
+    actuate(range_4, 3)
+    time.sleep(0.1)
     print("Bot at given position!")
 
 # Set frequency to 60hz, good for servos.
@@ -97,13 +101,20 @@ def temp_position_handler(in_string):
         actuate_to_position(position_pre_grip)
     elif in_string == "grip":
         actuate_to_position(position_grip)
-    elif in_string == "example":
-        actuate_to_position(position_example)
+    elif in_string == "lift":
+        actuate_to_position(position_lift)
+    elif in_string == "place":
+        actuate_to_position(position_place)
+    elif in_string == "drop":
+        actuate_to_position(position_drop)
 
-positions = ["home", "pre_grip", "grip", "example"]
+positions = ["home", "pre_grip", "grip", "lift", "place", "drop"]
 
-while True:
-    for position in positions:
-        temp_position_handler(position)
-        time.sleep(0.5)
+for position in positions:
+    temp_position_handler(position)
+    time.sleep(1)
+
+time.sleep(2)
+print("Going home!")
+actuate_to_position(position_home)
 
