@@ -137,9 +137,10 @@ def detect_holes(im):
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
     chosen_x = min((abs(x), x) for x in x_points)[1]
-    block_pickup.set()
-    camera_calculation.clear()
-    actuate_to_x(chosen_x)
+    if len(x_points) == 4:
+        block_pickup.set()
+        camera_calculation.clear()
+        actuate_to_x(chosen_x)
 
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
@@ -226,7 +227,7 @@ def camera_vision():
         cv2.imshow("holes", holes)
         kc = cv2.waitKey(1) & 0xff
         if kc == ord('q'):
-            break;
+            break
 
     cv2.destroyALlWindows()
     cam.release()
