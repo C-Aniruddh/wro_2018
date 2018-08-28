@@ -27,5 +27,5 @@ def world_coordinates(u, v):
     world_coord = world_coord * distance_cam
     world_x = world_coord[0][0]
     world_y = world_coord[1][1]
-    print(world_x, world_y)
+    """print(world_x, world_y)"""
     return world_x, world_y

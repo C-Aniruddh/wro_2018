@@ -69,8 +69,9 @@ def actuate_to_value(in_value):
             time.sleep(0.01)
             pwm.set_pwm(11, 0, pulse)
             if(counter == in_value):
+                print("here 1")
                 pwm.set_pwm(11, 0, 0)
-                break;
+                break
     else:
         pulse = int(translate(97, 0, 180, servo_min, servo_max))
         while(counter >= in_value):
@@ -86,9 +87,11 @@ def actuate_to_value(in_value):
             time.sleep(0.01)
             pwm.set_pwm(11, 0, pulse)
             if(counter == in_value):
+                print("here 2")
                 pwm.set_pwm(11, 0, 0)
-                break;
+                break
+
 while True:
     distance = int(input("Enter distance : "))
-    position = translate(distance, -6.5, 6.5, -45, 45)
+    position = int(translate(distance, -6.5, 6.5, -45, 45))
     actuate_to_value(position)

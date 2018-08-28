@@ -147,12 +147,18 @@ def detect_holes(im):
                     cv2.FONT_HERSHEY_DUPLEX,
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
-    chosen_x = min((abs(x), x) for x in x_points)[1]
-    
-    if len(x_points) == 4:
+    no_points = len(x_points)
+    print(no_points)
+    if no_points == 4:
+        mapped_x = []
+        for a in x_points:
+            map_x = calculations.translate(a, 0, world_max_width, -22, 22)
+            mapped_x.append(map_x)
+
+        chosen_x = min((abs(x), x) for x in mapped_x)[1]
         block_pickup.set()
         camera_calculation.clear()
-        actuate_to_x(chosen_x)
+        actuate_to_x(int(chosen_x))
 
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
@@ -214,8 +220,8 @@ def temp_position_handler(in_string):
 
 
 def actuate_to_x(distance):
-    while not camera_calculation.wait(timeout=50):
-        steps = calculations.translate(distance, 0, world_max_width, -22, 22)
+    while not camera_calculation.wait(timeout=0.01):
+        steps = distance
         done = actuate_to_value(steps)
         if done:
             positions = ["home", "pre_grip", "grip", "lift", "place", "drop"]
@@ -227,7 +233,7 @@ def actuate_to_x(distance):
 
 
 def camera_vision():
-    while not block_pickup.wait(timeout=50):
+    while not block_pickup.wait(timeout=0.01):
         camera_calculation.set()
         _, frame = cam.read()
         scale_percent = 50  # percent of original size
@@ -244,4 +250,4 @@ def camera_vision():
     cv2.destroyAllWindows()
     cam.release()
 
-camera_vision()
+threading.Thread(target=camera_vision).start()

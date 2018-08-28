@@ -1,7 +1,7 @@
 import cv2
 import config
 import calculations
-# import threading
+import threading
 
 
 # block_pickup = threading.Event()
@@ -62,6 +62,7 @@ def camera_vision():
     # while not block_pickup.wait(timeout=5000):
     while True:
         _, frame = cam.read()
+        print(frame.shape[0], frame.shape[1])
         scale_percent = 50  # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
