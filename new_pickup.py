@@ -42,6 +42,9 @@ params.minDistBetweenBlobs = 5
 detector = cv2.SimpleBlobDetector_create(params)
 
 world_max_width = calculations.world_coordinates(480, 640)[1]
+half_max_width = world_max_widh / 2
+usable_range_min = -1*(half_max_width)
+usable_range_max = half_max_width
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -150,13 +153,15 @@ def detect_holes(im):
     if no_points == 4:
         mapped_x = []
         for a in x_points:
-            map_x = calculations.translate(a, 0, world_max_width, -22, 22)
+            map_x = calculations.translate(a, 0, world_max_width, usable_range_min, usable_range_max)
             mapped_x.append(map_x)
+
         print(mapped_x)
         print("Found block! Stopping camera and starting actuation in 5 seconds")
         time.sleep(5)
         chosen_x = min((abs(x), x) for x in mapped_x)[1]
         print(chosen_x)
+        time.sleep(0)
         block_pickup.set()
         camera_calculation.clear()
         actuate_to_x(int(chosen_x))
@@ -223,7 +228,7 @@ def temp_position_handler(in_string):
 def actuate_to_x(distance):
     while not camera_calculation.wait(timeout=0.01):
         print("Moving in X")
-        steps = distance
+        steps = int(calculations.translate(distance, 0, world_max_width. -45, 45))
         done = actuate_to_value(int(steps))
         if done:
             print("Moved in X. Picking up in 3 seconds")
