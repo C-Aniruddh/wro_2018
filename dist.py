@@ -94,4 +94,4 @@ def actuate_to_value(in_value):
 while True:
     distance = int(input("Enter distance : "))
     position = int(translate(distance, -6.5, 6.5, -45, 45))
-    actuate_to_value(position)
+    actuate_to_value(int(position))

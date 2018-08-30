@@ -41,10 +41,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-world_max_width = calculations.world_coordinates(480, 640)[1]
-half_max_width = world_max_width / 2
-usable_range_min = -1*(half_max_width)
-usable_range_max = half_max_width
+cam_offset = 2
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -58,6 +55,9 @@ GPIO.setup(dt, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 counter = 0
 clkLastState = GPIO.input(clk)
 print("Encoder at {}".format(clkLastState))
+
+min_x = calculations.world_coordinates(0, 0)[0]
+max_x = calculations.world_coordinates(320, 0)[0]
 
 position_home = {'first': 60, 'second': 70, 'third': 90, 'fourth': 0}
 position_pre_grip = {'first': 0, 'second': 100, 'third': 85, 'fourth': 0}
@@ -140,7 +140,10 @@ def detect_holes(im):
     keypoints = detector.detect(im)
     x_points = []
     for k in keypoints:
-        x, y = calculations.world_coordinates(int(k.pt[0]), int(k.pt[1]))
+        u = int(k.pt[0]) - 160
+        v = int(k.pt[1]) + 120
+        x, y = calculations.world_coordinates(int(u), int(u))
+        x = x + cam_offset
         x_points.append(x)
         cv2.circle(overlay, (int(k.pt[0]), int(k.pt[1])), int(k.size / 2), (0, 0, 255), 2)
         cv2.line(overlay, (int(k.pt[0]) - 20, int(k.pt[1])), (int(k.pt[0]) + 20, int(k.pt[1])), (0, 0, 0), 3)
@@ -148,24 +151,19 @@ def detect_holes(im):
         cv2.putText(overlay, str("({:.2f}, {:.2f})".format(float(x), float(y))), (int(k.pt[0]), int(k.pt[1])),
                     cv2.FONT_HERSHEY_DUPLEX,
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
-
+    
     no_points = len(x_points)
     if no_points == 4:
-        mapped_x = []
-        for a in x_points:
-            map_x = calculations.translate(a, 0, world_max_width, usable_range_min, usable_range_max)
-            mapped_x.append(map_x)
 
-        print(mapped_x)
         print("Found block! Stopping camera and starting actuation in 5 seconds")
         time.sleep(5)
-        chosen_x = min((abs(x), x) for x in mapped_x)[1]
+        chosen_x = min((abs(x), x) for x in x_points)[1]
         print(chosen_x)
-        time.sleep(0)
+        time.sleep(2)
         block_pickup.set()
         camera_calculation.clear()
         actuate_to_x(int(chosen_x))
-
+    
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
@@ -228,8 +226,9 @@ def temp_position_handler(in_string):
 def actuate_to_x(distance):
     while not camera_calculation.wait(timeout=0.01):
         print("Moving in X")
-        steps = int(calculations.translate(distance, 0, world_max_width, -45, 45))
+        steps = int(calculations.translate(distance, -6.5, 6.5, -45, 45))
         done = actuate_to_value(int(steps))
+        
         if done:
             print("Moved in X. Picking up in 3 seconds")
             time.sleep(3)
@@ -240,7 +239,7 @@ def actuate_to_x(distance):
                 temp_position_handler(position)
             camera_calculation.set()
             block_pickup.clear()
-
+        
 
 def camera_vision():
     while not block_pickup.wait(timeout=0.01):
