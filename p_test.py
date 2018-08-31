@@ -154,6 +154,9 @@ def detect_holes(im):
     
     no_points = len(x_points)
     if no_points == 4:
+        
+        cv2.destroyAllWindows()
+        cam.release()
 
         print("Found block! Stopping camera and starting actuation in 5 seconds")
         time.sleep(5)
@@ -254,9 +257,9 @@ def camera_vision():
         cv2.imshow("holes", holes)
         kc = cv2.waitKey(1) & 0xff
         if kc == ord('q'):
+            cam.release()
+            cv2.destroyAllWindows()
             break
 
-    cv2.destroyAllWindows()
-    cam.release()
 
 threading.Thread(target=camera_vision).start()
