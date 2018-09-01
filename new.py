@@ -3,7 +3,6 @@ import time
 
 import Adafruit_PCA9685
 
-
 pwm = Adafruit_PCA9685.PCA9685()
 
 # Configure min and max servo pulse lengths
@@ -15,10 +14,11 @@ angle_1 = 70
 angle_2 = 85
 angle_3 = 0
 
-position_home = {'first' : 60, 'second' : 70, 'third' : 90, 'fourth' : 0}
-position_pre_grip = {'first' : 0, 'second' : 87, 'third' : 90, 'fourth' : 0}
-position_grip = {'first' : 0, 'second' : 100, 'third' : 90, 'fourth' : 0}
-position_example = {'first' : 130, 'second' : 0, 'third' : 90, 'fourth' : 0}
+position_home = {'first': 60, 'second': 70, 'third': 90, 'fourth': 0}
+position_pre_grip = {'first': 0, 'second': 87, 'third': 90, 'fourth': 0}
+position_grip = {'first': 0, 'second': 100, 'third': 90, 'fourth': 0}
+position_example = {'first': 130, 'second': 0, 'third': 90, 'fourth': 0}
+
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
     # Figure out how 'wide' each range is
@@ -40,6 +40,7 @@ def get_range(initial_value, final_value):
     range_1.append(final_value)
     return range_1
 
+
 def actuate(range_in, channel):
     print("Actuating {} to {}".format(channel, range_in[-1]))
     for r in range_in:
@@ -47,6 +48,7 @@ def actuate(range_in, channel):
         pwm.set_pwm(channel, 0, pulse)
         time.sleep(0.05)
     print("Channel is {} at {}".format(channel, range_in[-1]))
+
 
 def actuate_to_position(position_dict):
     global angle_0
@@ -74,6 +76,7 @@ def actuate_to_position(position_dict):
     time.sleep(0.1)
     print("Bot at given position!")
 
+
 # Set frequency to 60hz, good for servos.
 pwm.set_pwm_freq(60)
 
@@ -90,6 +93,7 @@ pwm.set_pwm(0, 0, pulse_0)
 time.sleep(0.1)
 print("Done!")
 
+
 def temp_position_handler(in_string):
     if in_string == "home":
         actuate_to_position(position_home)
@@ -100,10 +104,10 @@ def temp_position_handler(in_string):
     elif in_string == "example":
         actuate_to_position(position_example)
 
+
 positions = ["home", "pre_grip", "grip", "example"]
 
 while True:
     for position in positions:
         temp_position_handler(position)
         time.sleep(0.5)
-
