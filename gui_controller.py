@@ -152,17 +152,17 @@ def sel():
 
 root = Tk()
 angle_0_gui = DoubleVar()
-scale_0 = Scale(root, variable=angle_0_gui, orient=HORIZONTAL, label="Servo 0", from_=0, to=180)
+scale_0 = Scale(root, variable=angle_0_gui, orient=HORIZONTAL, label="Servo 0", from_=-20, to=200)
 scale_0.set(angle_0)
 scale_0.pack()
 
 angle_1_gui = DoubleVar()
-scale_1 = Scale(root, variable=angle_1_gui, orient=HORIZONTAL, label="Servo 1", from_=0, to=180)
+scale_1 = Scale(root, variable=angle_1_gui, orient=HORIZONTAL, label="Servo 1", from_=-20, to=200)
 scale_1.set(angle_1)
 scale_1.pack()
 
 angle_2_gui = DoubleVar()
-scale_2 = Scale(root, variable=angle_2_gui, orient=HORIZONTAL, label="Servo 2", from_=0, to=180)
+scale_2 = Scale(root, variable=angle_2_gui, orient=HORIZONTAL, label="Servo 2", from_=-20, to=200)
 scale_2.set(angle_2)
 scale_2.pack()
 
@@ -172,12 +172,12 @@ scale_3.set(angle_3)
 scale_3.pack()
 
 angle_4_gui = DoubleVar()
-scale_4 = Scale(root, variable=angle_4_gui, orient=HORIZONTAL, label="Stack (bottom)", from_=0, to=180)
+scale_4 = Scale(root, variable=angle_4_gui, orient=HORIZONTAL, label="Stack (bottom)", from_=-20, to=200)
 scale_4.set(angle_4)
 scale_4.pack()
 
 angle_5_gui = DoubleVar()
-scale_5 = Scale(root, variable=angle_5_gui, orient=HORIZONTAL, label="Stack (Up)", from_=0, to=180)
+scale_5 = Scale(root, variable=angle_5_gui, orient=HORIZONTAL, label="Stack (Up)", from_=-20, to=200)
 scale_5.set(angle_5)
 scale_5.pack()
 
