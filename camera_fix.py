@@ -182,22 +182,21 @@ def detect_holes(im):
 
     no_points = len(x_points)
     if no_points == 2:
-        cv2.destroyAllWindows()
-        cam.release()
-
-        print("Found block! Stopping camera and starting actuation in 5 seconds")
-        time.sleep(5)
-        chosen_x = min((abs(x), x) for x in x_points)[1]
-        print(chosen_x)
-        time.sleep(2)
-        block_pickup.set()
-        camera_calculation.set()
-        hole_detection.clear()
-        actuate_to_x(int(chosen_x))
-
+        threading.Thread(target=pickup_thread).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
+
+def pickup_thread():
+    print("Found block! Stopping camera and starting actuation in 5 seconds")
+    time.sleep(5)
+    chosen_x = min((abs(x), x) for x in x_points)[1]
+    print(chosen_x)
+    time.sleep(2)
+    block_pickup.set()
+    camera_calculation.set()
+    hole_detection.clear()
+    actuate_to_x(int(chosen_x))
 
 
 def actuate_to_value(in_value):
