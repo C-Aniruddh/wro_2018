@@ -1,7 +1,6 @@
-# !/usr/bin/python3
+from __future__ import division
 from tkinter import *
 
-from __future__ import division
 import time
 
 import Adafruit_PCA9685
@@ -73,33 +72,33 @@ time.sleep(0.1)
 print("Done!")
 
 
-def actuate_angle_0():
-    angle = int(angle_0_gui.get())
+def actuate_angle_0(value):
+    angle = int(value)
     actuate(angle, 0)
 
 
-def actuate_angle_1():
-    angle = int(angle_1_gui.get())
+def actuate_angle_1(value):
+    angle = int(value)
     actuate(angle, 1)
 
 
-def actuate_angle_2():
-    angle = int(angle_2_gui.get())
+def actuate_angle_2(value):
+    angle = int(value)
     actuate(angle, 2)
 
 
-def actuate_angle_3():
-    angle = int(angle_3_gui.get())
+def actuate_angle_3(value):
+    angle = int(value)
     actuate(angle, 3)
 
 
-def actuate_angle_4():
-    angle = int(angle_4_gui.get())
+def actuate_angle_4(value):
+    angle = int(value)
     actuate(angle, 7)
 
 
-def actuate_angle_5():
-    angle = int(angle_5_gui.get())
+def actuate_angle_5(value):
+    angle = int(value)
     actuate(angle, 5)
 
 

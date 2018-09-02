@@ -1,7 +1,6 @@
-# !/usr/bin/python3
+from __future__ import division
 from tkinter import *
 
-from __future__ import division
 import time
 
 import Adafruit_PCA9685
@@ -76,6 +75,42 @@ time.sleep(0.1)
 
 print("Done!")
 
+def go_home():
+    global angle_0, angle_1, angle_2, angle_3, angle_4, angle_5
+    angle_0_old = angle_0
+    angle_1_old = angle_1
+    angle_2_old = angle_2
+    angle_3_old = angle_3
+    angle_4_old = angle_4
+    angle_5_old = angle_5
+
+    angle_0 = int(90)
+    angle_1 = int(110)
+    angle_2 = int(85)
+    angle_3 = int(0)
+    angle_4 = int(100)
+    angle_5 = int(60)
+
+    range_1 = get_range(angle_0_old, angle_0)
+    range_2 = get_range(angle_1_old, angle_1)
+    range_3 = get_range(angle_2_old, angle_2)
+    range_4 = get_range(angle_3_old, angle_3)
+    range_5 = get_range(angle_4_old, angle_4)
+    range_6 = get_range(angle_5_old, angle_5)
+
+    actuate(range_3, 2)
+    time.sleep(1)
+    actuate(range_2, 1)
+    time.sleep(1)
+    actuate(range_1, 0)
+    time.sleep(1)
+    actuate(range_4, 3)
+    time.sleep(1)
+    actuate(range_5, 7)
+    time.sleep(1)
+    actuate(range_6, 5)
+    time.sleep(1)
+    label.config(text="Home")
 
 def sel():
     global angle_0, angle_1, angle_2, angle_3, angle_4, angle_5
@@ -118,30 +153,39 @@ def sel():
 root = Tk()
 angle_0_gui = DoubleVar()
 scale_0 = Scale(root, variable=angle_0_gui, orient=HORIZONTAL, label="Servo 0", from_=0, to=180)
+scale_0.set(angle_0)
 scale_0.pack()
 
 angle_1_gui = DoubleVar()
 scale_1 = Scale(root, variable=angle_1_gui, orient=HORIZONTAL, label="Servo 1", from_=0, to=180)
+scale_1.set(angle_1)
 scale_1.pack()
 
 angle_2_gui = DoubleVar()
 scale_2 = Scale(root, variable=angle_2_gui, orient=HORIZONTAL, label="Servo 2", from_=0, to=180)
+scale_2.set(angle_2)
 scale_2.pack()
 
 angle_3_gui = DoubleVar()
 scale_3 = Scale(root, variable=angle_3_gui, orient=HORIZONTAL, label="Gripper", from_=0, to=180)
+scale_3.set(angle_3)
 scale_3.pack()
 
 angle_4_gui = DoubleVar()
 scale_4 = Scale(root, variable=angle_4_gui, orient=HORIZONTAL, label="Stack (bottom)", from_=0, to=180)
+scale_4.set(angle_4)
 scale_4.pack()
 
 angle_5_gui = DoubleVar()
 scale_5 = Scale(root, variable=angle_5_gui, orient=HORIZONTAL, label="Stack (Up)", from_=0, to=180)
+scale_5.set(angle_5)
 scale_5.pack()
 
 button = Button(root, text="Actuate", command=sel)
 button.pack(anchor=CENTER)
+
+button2 = Button(root, text="Go Home", command=go_home)
+button2.pack(anchor=CENTER)
 
 label = Label(root)
 label.pack()
