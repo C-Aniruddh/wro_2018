@@ -2,20 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d945433a-ca0d-4356-a9e1-a7c27cc2d8bb" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/control_serial.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/gui_controller.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/gui_realtime.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/new_setpoints.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/camera_fix.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/cr.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/enter_angle.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/loop.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/new.py" afterPath="$PROJECT_DIR$/new.py" />
-      <change beforePath="$PROJECT_DIR$/servo_1.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/servo_2.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/simpletest.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/test.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/test_all.py.save" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,11 +26,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="new_setpoints.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="new_setpoints.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/new_setpoints.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="803">
-              <caret line="295" column="0" lean-forward="true" selection-start-line="295" selection-start-column="0" selection-end-line="295" selection-end-column="0" />
+            <state relative-caret-position="-437">
+              <caret line="273" column="21" lean-forward="false" selection-start-line="273" selection-start-column="21" selection-end-line="273" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="camera_fix.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/camera_fix.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="108">
+              <caret line="284" column="20" lean-forward="false" selection-start-line="284" selection-start-column="20" selection-end-line="284" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -64,18 +62,6 @@
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="map.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/map.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -129,11 +115,9 @@
       <file leaf-file-name="gui_controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gui_controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="99" column="4" lean-forward="false" selection-start-line="99" selection-start-column="4" selection-end-line="100" selection-end-column="45" />
-              <folding>
-                <element signature="e#20#41#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1271">
+              <caret line="134" column="4" lean-forward="false" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="4" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -146,6 +130,12 @@
         <option value="Python Script" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>camera_cal</find>
+      <find>camera_calculation</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -166,6 +156,7 @@
         <option value="$PROJECT_DIR$/gui_controller.py" />
         <option value="$PROJECT_DIR$/new_setpoints.py" />
         <option value="$PROJECT_DIR$/gui_realtime.py" />
+        <option value="$PROJECT_DIR$/camera_fix.py" />
       </list>
     </option>
   </component>
@@ -677,11 +668,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/gui_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="99" column="4" lean-forward="false" selection-start-line="99" selection-start-column="4" selection-end-line="100" selection-end-column="45" />
-          <folding>
-            <element signature="e#20#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1271">
+          <caret line="134" column="4" lean-forward="false" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -703,8 +692,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/new_setpoints.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="803">
-          <caret line="295" column="0" lean-forward="true" selection-start-line="295" selection-start-column="0" selection-end-line="295" selection-end-column="0" />
+        <state relative-caret-position="-437">
+          <caret line="273" column="21" lean-forward="false" selection-start-line="273" selection-start-column="21" selection-end-line="273" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/camera_fix.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="284" column="20" lean-forward="false" selection-start-line="284" selection-start-column="20" selection-end-line="284" selection-end-column="20" />
           <folding />
         </state>
       </provider>
