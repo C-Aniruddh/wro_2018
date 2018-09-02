@@ -16,6 +16,9 @@ camera_calculation.set()
 hole_detection = threading.Event()
 hole_detection.set()
 
+start_pick = threading.Event()
+start_pick.clear()
+
 cam = cv2.VideoCapture(config.CAMERA_ID)
 
 detector = cv2.SimpleBlobDetector_create()
@@ -181,22 +184,25 @@ def detect_holes(im):
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
     no_points = len(x_points)
-    if no_points == 2:
-        threading.Thread(target=pickup_thread).start()
+    if no_points == 2 and (not start_pick.wait(timeout=0.5)):
+        start_pick.set()
+        threading.Thread(target=pickup_thread, args=[x_points]).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
 
-def pickup_thread():
-    print("Found block! Stopping camera and starting actuation in 5 seconds")
-    time.sleep(5)
-    chosen_x = min((abs(x), x) for x in x_points)[1]
-    print(chosen_x)
-    time.sleep(2)
-    block_pickup.set()
-    camera_calculation.set()
-    hole_detection.clear()
-    actuate_to_x(int(chosen_x))
+
+def pickup_thread(x_points):
+    while start_pick.wait(timeout=0.5):
+        print("Found block! Stopping camera and starting actuation in 5 seconds")
+        time.sleep(5)
+        chosen_x = min((abs(x), x) for x in x_points)[1]
+        print(chosen_x)
+        time.sleep(2)
+        block_pickup.set()
+        camera_calculation.set()
+        hole_detection.clear()
+        actuate_to_x(int(chosen_x))
 
 
 def actuate_to_value(in_value):
@@ -276,6 +282,7 @@ def actuate_to_x(distance):
             time.sleep(2)
             print("Sleep over, camera starting")
             block_pickup.clear()
+            start_pick.clear()
             hole_detection.set()
             camera_calculation.set()
 
