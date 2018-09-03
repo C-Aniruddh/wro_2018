@@ -47,7 +47,7 @@ pwm.set_pwm_freq(60)
 
 print("Initializing")
 angle_0 = 90
-angle_1 = 110
+angle_1 = 120
 angle_2 = 85
 angle_3 = 0
 angle_4 = 100

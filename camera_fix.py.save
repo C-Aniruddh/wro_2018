@@ -47,7 +47,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-cam_offset = 2.4
+cam_offset = 2
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -75,7 +75,7 @@ position_drop = {'first': 145, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b
 print("Initializing")
 
 angle_0 = 90
-angle_1 = 120
+angle_1 = 122
 angle_2 = 85
 angle_3 = 0
 angle_4 = 100
@@ -115,7 +115,7 @@ def get_range(initial_value, final_value):
 def actuate(range_in, channel):
     print("Actuating {} to {}".format(channel, range_in[-1]))
     for r in range_in:
-        pulse = int(calculations.translate(r, 0, 180, config.servo_min, config.servo_max))
+ came       pulse = int(calculations.translate(r, 0, 180, config.servo_min, config.servo_max))
         pwm.set_pwm(channel, 0, pulse)
         time.sleep(0.05)
     print("Channel is {} at {}".format(channel, range_in[-1]))
@@ -278,7 +278,6 @@ def actuate_to_x(distance):
 
             print("Going back home!")
             temp_position_handler("home")
-            actuate_to_value(0)
             print("At home, sleeping for 2")
             time.sleep(2)
             print("Sleep over, camera starting")
