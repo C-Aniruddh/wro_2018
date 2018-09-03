@@ -24,8 +24,8 @@ int in11 = 24;
 int in21 = 25;
 int in22 = 30;
 int in12 = 31;
-int pwm1 = 11;
-int pwm2 = 12;
+int pwm1 = 11; //Blue
+int pwm2 = 10; //Grey
 int dir = 0;
 
 bool LNFS = false;
@@ -49,9 +49,9 @@ String getValue(String data, char separator, int index)
 
 void Forward(int spd1, int spd2) {
   digitalWrite(in11, LOW);
-  digitalWrite(in22, LOW);
-  digitalWrite(in12, HIGH);
   digitalWrite(in21, HIGH);
+  digitalWrite(in12, HIGH);
+  digitalWrite(in22, LOW);
 
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
@@ -60,9 +60,10 @@ void Forward(int spd1, int spd2) {
 
 void Reverse(int spd1, int spd2) {
   digitalWrite(in11, HIGH);
-  digitalWrite(in22, HIGH);
-  digitalWrite(in12, LOW);
   digitalWrite(in21, LOW);
+  digitalWrite(in12, LOW);
+  digitalWrite(in22, HIGH);
+
 
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
@@ -72,9 +73,9 @@ void Reverse(int spd1, int spd2) {
 
 void Right(int spd1, int spd2) {
   digitalWrite(in11, LOW);
-  digitalWrite(in22, LOW);
-  digitalWrite(in12, HIGH);
   digitalWrite(in21, HIGH);
+  digitalWrite(in12, HIGH);
+  digitalWrite(in22, LOW);
 
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
@@ -83,9 +84,9 @@ void Right(int spd1, int spd2) {
 
 void Left(int spd1, int spd2) {
   digitalWrite(in11, LOW);
-  digitalWrite(in22, LOW);
-  digitalWrite(in12, HIGH);
   digitalWrite(in21, HIGH);
+  digitalWrite(in12, HIGH);
+  digitalWrite(in22, LOW);
 
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
@@ -93,10 +94,10 @@ void Left(int spd1, int spd2) {
 }
 
 void BiLeft(int spd1, int spd2) {
-  digitalWrite(in11, LOW);
-  digitalWrite(in22, HIGH);
-  digitalWrite(in12, LOW);
-  digitalWrite(in21, HIGH);
+  digitalWrite(in11, HIGH);
+  digitalWrite(in21, LOW);
+  digitalWrite(in12, HIGH);
+  digitalWrite(in22, LOW);
 
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
@@ -104,33 +105,34 @@ void BiLeft(int spd1, int spd2) {
 }
 
 void BiRight(int spd1, int spd2) {
-  digitalWrite(in11, HIGH);
-  digitalWrite(in22, LOW);
-  digitalWrite(in12, HIGH);
-  digitalWrite(in21, LOW);
+  digitalWrite(in11, LOW);
+  digitalWrite(in21, HIGH);
+  digitalWrite(in12, LOW);
+  digitalWrite(in22, HIGH);
 
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
   Serial.println("BIR :" + String(spd1) + String(spd2));
 }
 
+void Rotate_St() {
+  BiRight(200, 200);
+  delay(300);
+  while (!(digitalRead(5) && digitalRead(6))) {
+    BiRight(200, 200);
+  }
+}
+
 void wait() {
 
   digitalWrite(in11, LOW);
-  digitalWrite(in22, LOW);
-  digitalWrite(in12, LOW);
   digitalWrite(in21, LOW);
+  digitalWrite(in12, LOW);
+  digitalWrite(in22, LOW);
 
   analogWrite(pwm1, 0);
   analogWrite(pwm2, 0);
   Serial.println("waiting....");
-
-}
-
-void Rotate_St() {
-  while (digitalRead(5) && digitalRead(6)) {
-    BiRight(220, 220);
-  }
 }
 
 void stepperActuator(int steps) {
@@ -162,20 +164,20 @@ void curXLower() {
     dir = 0;
     curX++;
   } else if (dir == 1) {
-    BiRight(220, 220);
+    BiRight(200, 200);
     delay(3000);
     Forward(170, 170);
     dir = 3;
     curY--;
   } else if (dir == 2) {
-    BiRight(220, 220);
-    delay(1700);
+    BiRight(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 0;
     curX++;
   } else {
-    BiRight(220, 220);
-    delay(1700);
+    BiRight(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 0;
     curX++;
@@ -185,8 +187,8 @@ void curXLower() {
 
 void curYLower() {
   if (dir == 0) {
-    BiRight(220, 220);
-    delay(1700);
+    BiRight(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 1;
     curY++;
@@ -195,14 +197,14 @@ void curYLower() {
     dir = 1;
     curY++;
   } else if (dir == 2) {
-    BiLeft(220, 220);
-    delay(1700);
+    BiLeft(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 1;
     curY++;
   } else {
-    BiRight(220, 220);
-    delay(1700);
+    BiRight(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 1;
     curY++;
@@ -215,18 +217,18 @@ void curYHigher() {
     dir = 0;
     curY--;
   } else if (dir == 1) {
-    BiRight(220, 220);
-    delay(1700);
+    BiRight(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 3;
     curY--;
   } else if (dir == 2) {
     BiLeft(190, 190);
-    delay(1700);
+    delay(3400);
     dir = 3;
   } else {
-    BiRight(220, 220);
-    delay(1700);
+    BiRight(200, 200);
+    delay(3400);
     Forward(170, 170);
     dir = 1;
     curY--;
@@ -285,18 +287,13 @@ void LSA_Manager() {
     junctionManager();
     delay(1000);
   } else if ((digitalRead(5) && digitalRead(4)) || (digitalRead(6) && digitalRead(4))) {
-    if (modR == true) {
-      Reverse(140, 140);
-    } else {
-      Forward(140, 140);
-    }
-
+    Forward(140, 140);
 
   } else if ((digitalRead(3) && digitalRead(4)) || (digitalRead(3) || (digitalRead(2)))) {
     if (modR == true) {
       Right(190, 90);
     } else {
-      Left(190, 90);
+      Left(90, 190);
     }
     delay(200);
 
@@ -304,9 +301,9 @@ void LSA_Manager() {
               (digitalRead(7) && digitalRead(8)) ||
               (digitalRead(8)) || (digitalRead(9)))) {
     if (modR == true) {
-      Left(190, 90);
+      Left(90, 190);
     } else {
-      Right(90, 190);
+      Right(190, 90);
     }
     delay(200);
 
@@ -319,9 +316,6 @@ void LSA_Manager() {
 void stopLineFollow() {
   Serial.println("Stop Line Follower");
   LNFS = false;
-  if (curX == 2 && curY == 0) {
-    Rotate_St();
-  }
   wait();
 }
 void startLineFollow() {
@@ -330,20 +324,18 @@ void startLineFollow() {
 }
 
 void goHome() {
-  while (!(digitalRead(2) && digitalRead(6) && digitalRead(9))) {
-    Forward(140, 140);
-  }
-  BiLeft(220, 220);
-  delay(1700);
+  Forward(140, 140);
+  delay(1500);
+  BiLeft(200, 200);
+  delay(3400);
 }
 
 void setup() {
   // put your setup code here, to run once:
-  myservo.attach(10);
-  pinMode(in22, OUTPUT);
-  pinMode(in12, OUTPUT);
-  pinMode(in11, OUTPUT);
-  pinMode(in21, OUTPUT);
+  pinMode(30, OUTPUT);
+  pinMode(31, OUTPUT);
+  pinMode(24, OUTPUT);
+  pinMode(25, OUTPUT);
 
   for (int i = 2; i <= 9; i++) {
     pinMode(i, INPUT);
@@ -355,14 +347,6 @@ void setup() {
 
   curX = 0;
   curY = 0;
-  String SLF = "Start Line Follower : " + line_follower_start;
-  String NLF = "Stop Line Follower : " + line_follower_stop;
-  String GOTO = "GOTO Point : " + goto_id;
-  String GOHome = "GOTO Home : " + start_id;
-  Serial.println(SLF);
-  Serial.println(NLF);
-  Serial.println(GOTO);
-  Serial.println(GOHome);
 }
 
 void loop() {
