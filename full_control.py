@@ -53,7 +53,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-cam_offset = 2
+cam_offset = 2.5
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -77,7 +77,7 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 110, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 60}
+position_home = {'first': 90, 'second': 123, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 60}
 position_pre_grip = {'first': 30, 'second': 145, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 60}
 position_grip = {'first': 5, 'second': 145, 'third': 85, 'fourth': 90, 'stack_b': 130, 'stack_u': 90}
 position_lift = {'first': 90, 'second': 160, 'third': 85, 'fourth': 90, 'stack_b': 130, 'stack_u': 90}
@@ -87,7 +87,7 @@ position_drop = {'first': 145, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b
 print("Initializing")
 
 angle_0 = 90
-angle_1 = 110
+angle_1 = 123
 angle_2 = 85
 angle_3 = 0
 angle_4 = 100
@@ -114,10 +114,16 @@ pwm.set_pwm(5, 0, pulse_5)
 time.sleep(0.1)
 print("Done!")
 
-command = "GT-1-1"
+command = "GT-1-0"
 command = command.encode('utf-8')
 
+vbc = input("Enter any key to start : ")
+print("Sleeping for 3")
+time.sleep(3)
+print("START")
 ArduinoSerial.write(bytes(SLF))
+
+avc = input("Eter any key to send to 1,1 : ")
 ArduinoSerial.write(bytes(command))
 
 
@@ -204,7 +210,9 @@ def detect_holes(im):
     no_points = len(x_points)
     if no_points == 2 and (not start_pick.wait(timeout=0.5)):
         start_pick.set()
+        time.sleep(0.1)
         ArduinoSerial.write(bytes(NLF))
+        time.sleep(0.3)
         threading.Thread(target=pickup_thread, args=[x_points]).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
@@ -297,6 +305,7 @@ def actuate_to_x(distance):
 
             print("Going back home!")
             temp_position_handler("home")
+            actuate_to_value(0)
             print("At home, sleeping for 2")
             time.sleep(2)
             ArduinoSerial.write(bytes(SLF))
@@ -325,6 +334,5 @@ def camera_vision():
             cam.release()
             cv2.destroyAllWindows()
             break
-
 
 threading.Thread(target=camera_vision).start()
