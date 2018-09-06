@@ -83,12 +83,14 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 123, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 60}
-position_pre_grip = {'first': 30, 'second': 145, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 60}
-position_grip = {'first': 5, 'second': 145, 'third': 85, 'fourth': 90, 'stack_b': 130, 'stack_u': 90}
-position_lift = {'first': 90, 'second': 160, 'third': 85, 'fourth': 90, 'stack_b': 130, 'stack_u': 90}
-position_place = {'first': 140, 'second': -20, 'third': 85, 'fourth': 90, 'stack_b': 130, 'stack_u': 90}
-position_drop = {'first': 145, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b': 130, 'stack_u': 90}
+position_home = {'first': 80, 'second': 120, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
+position_pre_grip = {'first': 13, 'second': 134, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
+position_grip_2 = {'first': 5, 'second': 130, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
+position_grip = {'first': 0, 'second': 125, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
+position_lift = {'first': 60, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
+position_lift_2 = {'first': 90, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
+position_place = {'first': 125, 'second': -20, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
+position_drop = {'first': 125, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
 
 print("Initializing")
 
@@ -126,9 +128,9 @@ command = command.encode('utf-8')
 
 def get_range(initial_value, final_value):
     if initial_value < final_value:
-        range_1 = list(range(initial_value, final_value, 3))
+        range_1 = list(range(initial_value, final_value, 4))
     else:
-        range_1 = list(range(initial_value, final_value, -3))
+        range_1 = list(range(initial_value, final_value, -4))
     range_1.append(final_value)
     return range_1
 
@@ -247,7 +249,7 @@ def pickup_thread(x_points):
 def actuate_to_value(in_value):
     global counter, clkLastState
     if counter < in_value:
-        pulse = int(calculations.translate(106, 0, 180, config.servo_min, config.servo_max))
+        pulse = int(calculations.translate(108, 0, 180, config.servo_min, config.servo_max))
         while counter <= in_value:
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
@@ -264,7 +266,7 @@ def actuate_to_value(in_value):
                 pwm.set_pwm(11, 0, 0)
                 break
     else:
-        pulse = int(calculations.translate(97, 0, 180, config.servo_min, config.servo_max))
+        pulse = int(calculations.translate(95, 0, 180, config.servo_min, config.servo_max))
         while counter >= in_value:
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
@@ -288,10 +290,14 @@ def temp_position_handler(in_string):
         actuate_to_position(position_home)
     elif in_string == "pre_grip":
         actuate_to_position(position_pre_grip)
+    elif in_string == "grip_2":
+        actuate_to_position(position_grip_2)
     elif in_string == "grip":
         actuate_to_position(position_grip)
     elif in_string == "lift":
         actuate_to_position(position_lift)
+    elif in_string == "lift_2":
+        actuate_to_position(position_lift_2)
     elif in_string == "place":
         actuate_to_position(position_place)
     elif in_string == "drop":
@@ -308,12 +314,12 @@ def actuate_to_x(distance):
             print("Moved in X. Picking up in 3 seconds")
             time.sleep(3)
 
-            positions = ["home", "pre_grip", "grip", "lift", "place", "drop"]
+            positions = ["home", "pre_grip", "grip_2", "grip", "lift", "lift_2", "place", "drop"]
 
             for position in positions:
                 temp_position_handler(position)
-                print("Completed a position, sleeping for 2")
-                time.sleep(2)
+                print("Completed a position, sleeping for 1")
+                time.sleep(1)
 
             print("Going back home!")
             temp_position_handler("home")
