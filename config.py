@@ -5,7 +5,7 @@ FPS = 30
 CAMERA_ID = 0
 
 # Serial
-ARDUINO_SERIAL_PORT = "/dev/tty"
+ARDUINO_SERIAL_PORT = "/dev/ttyACM0"
 BAUD_RATE = 9600
 
 # 3x3
