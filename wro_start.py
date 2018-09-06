@@ -73,6 +73,9 @@ SLF = SLF.encode('utf-8')
 NLF = "NLF"
 NLF = NLF.encode('utf-8')
 
+PSH = "PSH"
+PSH = PSH.encode('utf-8')
+
 counter = 0
 clkLastState = GPIO.input(clk)
 print("Encoder at {}".format(clkLastState))
@@ -119,7 +122,6 @@ print("Done!")
 
 command = "GT-1-0"
 command = command.encode('utf-8')
-
 
 
 def get_range(initial_value, final_value):
@@ -185,13 +187,24 @@ def actuate_to_position(position_dict):
     print("Bot at given position!")
 
 
+def get_final_holes(im):
+    keypoints = detector.detect(im)
+    x_points = []
+    for k in keypoints:
+        u = int(k.pt[0]) - 160
+        # v = int(k.pt[1]) + 120
+        x, y = calculations.world_coordinates(int(u), int(u))
+        x = x + cam_offset
+        x_points.append(x)
+    return x_points
+
+
 def detect_holes(im):
     overlay = im.copy()
     keypoints = detector.detect(im)
     x_points = []
     for k in keypoints:
         u = int(k.pt[0]) - 160
-        v = int(k.pt[1]) + 120
         x, y = calculations.world_coordinates(int(u), int(u))
         x = x + cam_offset
         x_points.append(x)
@@ -204,11 +217,15 @@ def detect_holes(im):
 
     no_points = len(x_points)
     if no_points == 2 and (not start_pick.wait(timeout=0.5)):
+        time.sleep(1)
         start_pick.set()
         time.sleep(0.1)
         ArduinoSerial.write(bytes(NLF))
         time.sleep(0.3)
-        threading.Thread(target=pickup_thread, args=[x_points]).start()
+        ArduinoSerial.write(bytes(PSH))
+        time.sleep(0.3)
+        final_x_pts = get_final_holes(im)
+        threading.Thread(target=pickup_thread, args=[final_x_pts]).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
