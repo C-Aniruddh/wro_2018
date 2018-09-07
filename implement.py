@@ -4,6 +4,8 @@ import calculations
 import threading
 import time
 
+import tetris_utils
+
 from RPi import GPIO
 import Adafruit_PCA9685
 import serial
@@ -192,9 +194,20 @@ def actuate_to_position(position_dict):
     print("Bot at given position!")
 
 
-def choose_x(x_list, block):
-    x = 0
-    return x
+def choose_x(x_points, block):
+    indexes = []
+    row_number = 0
+    block_id = tetris_utils.get_block_id(block)
+    solution_list = tetris_utils.solve_tetris()
+    for row in solution_list:
+        index = tetris_utils.indices(row, block_id, row_number)
+        indexes.extend(index)
+        row_number = row_number + 1
+
+    f = tetris_utils.get_feasible_coordinates(indexes)
+    print(f)
+    chosen_x = min((abs(x), x) for x in x_points)[1]
+    return chosen_x
 
 
 def get_final_holes(im):
@@ -245,20 +258,19 @@ def detect_holes(im):
         print("Pushed block")
         final_x_pts = get_final_holes(im)
         shape = color_utils.get_color(im)
-        threading.Thread(target=pickup_thread, args=[final_x_pts, shape]).start()
+        chosen_x = choose_x(final_x_pts, shape)
+        threading.Thread(target=pickup_thread, args=[chosen_x, shape]).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
 
 
-def pickup_thread(x_points, shape):
+def pickup_thread(chosen_x, shape):
     while start_pick.wait(timeout=0.5):
         print("FOUND BLOCK : {}".format(shape))
-        print("Found block! Stopping camera and starting actuation in 5 seconds")
-        time.sleep(5)
-        chosen_x = min((abs(x), x) for x in x_points)[1]
+        print("Found block! Stopping camera and starting actuation in 3 seconds")
         print(chosen_x)
-        time.sleep(2)
+        time.sleep(3)
         block_pickup.set()
         camera_calculation.set()
         hole_detection.clear()
