@@ -239,7 +239,7 @@ scale_5.set(angle_5)
 scale_5.pack()
 
 linear_0_gui = DoubleVar()
-scale_6 = Scale(root, variable=linear_0_gui, orient=HORIZONTAL, label="Linear Actuator", from_=-46, to=48)
+scale_6 = Scale(root, variable=linear_0_gui, orient=HORIZONTAL, label="Linear Actuator", from_=-60, to=60)
 scale_6.set(0)
 scale_6.pack()
 

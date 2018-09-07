@@ -27,10 +27,8 @@ def getCorners(mask, img):
         cnt = contours[i]
         epsilon = 0.03 * cv.arcLength(cnt, True)
         approx = cv.approxPolyDP(cnt, epsilon, True)
-        cv.drawContours(img, [approx], 0, YELLOW, -1)
         for corner in approx:
             x, y = corner.ravel()
-            cv.circle(img, (x, y), 3, BLUE, -1)
         ret = max(ret, len(approx))
     return ret, img
 

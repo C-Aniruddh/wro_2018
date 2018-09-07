@@ -88,23 +88,23 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 80, 'second': 120, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
-position_pre_grip = {'first': 13, 'second': 134, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
-position_grip_2 = {'first': 5, 'second': 130, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
-position_grip = {'first': 0, 'second': 125, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
-position_lift = {'first': 60, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
-position_lift_2 = {'first': 90, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
-position_place = {'first': 125, 'second': -20, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
-position_drop = {'first': 125, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
+position_home = {'first': 80, 'second': 100, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
+position_pre_grip = {'first': 13, 'second': 134, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
+position_grip_2 = {'first': 5, 'second': 130, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_grip = {'first': -5, 'second': 125, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_lift = {'first': 60, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_lift_2 = {'first': 90, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_place = {'first': 125, 'second': -20, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_drop = {'first': 125, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
 
 print("Initializing")
 
-angle_0 = 90
-angle_1 = 123
+angle_0 = 80
+angle_1 = 100
 angle_2 = 85
 angle_3 = 0
-angle_4 = 100
-angle_5 = 60
+angle_4 = 150
+angle_5 = 45
 
 pulse_0 = int(calculations.translate(angle_0, 0, 180, config.servo_min, config.servo_max))
 pulse_1 = int(calculations.translate(angle_1, 0, 180, config.servo_min, config.servo_max))
@@ -121,9 +121,9 @@ pwm.set_pwm(0, 0, pulse_0)
 time.sleep(0.1)
 pwm.set_pwm(3, 0, pulse_3)
 time.sleep(0.1)
-pwm.set_pwm(7, 0, pulse_4)
+pwm.set_pwm(15, 0, pulse_4)
 time.sleep(0.1)
-pwm.set_pwm(5, 0, pulse_5)
+pwm.set_pwm(7, 0, pulse_5)
 time.sleep(0.1)
 print("Done!")
 
@@ -187,9 +187,9 @@ def actuate_to_position(position_dict):
     time.sleep(0.1)
     actuate(range_4, 3)
     time.sleep(0.1)
-    actuate(range_5, 7)
+    actuate(range_5, 15)
     time.sleep(0.1)
-    actuate(range_6, 5)
+    actuate(range_6, 7)
     time.sleep(0.1)
     print("Bot at given position!")
 
@@ -378,13 +378,13 @@ def camera_vision():
             holes = detect_holes(frame)
         else:
             holes = frame
-        cv2.imshow("Holes", holes)
+        """cv2.imshow("Holes", holes)
         kc = cv2.waitKey(1) & 0xff
         if kc == ord('q'):
             cam.release()
             cv2.destroyAllWindows()
             break
-
+        """
 
 threading.Thread(target=camera_vision).start()
 vbc = input("Enter any key to start : ")
