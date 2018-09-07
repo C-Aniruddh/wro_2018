@@ -10,6 +10,10 @@ def indices(lst, element, row_number):
         result.append(offset_a)
 
 
-def get_coordinates(input_tile, solution_matrix):
-    indexes = list(solution_matrix).index(input_tile)
-    return indexes
+def get_feasible_coordinates(in_list):
+
+    feasible = []
+    for element in in_list:
+        if 2 <= element[1] <= 5:
+            feasible.append(element)
+    return feasible
