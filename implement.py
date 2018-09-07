@@ -8,6 +8,8 @@ from RPi import GPIO
 import Adafruit_PCA9685
 import serial
 
+import color_utils
+
 ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
 
 block_pickup = threading.Event()
@@ -28,7 +30,8 @@ bot_running.clear()
 cam = cv2.VideoCapture(config.CAMERA_ID)
 cam.set(3, 320)
 cam.set(4, 240)
-cam.set(cv2.CV_CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
 
 detector = cv2.SimpleBlobDetector_create()
 params = cv2.SimpleBlobDetector_Params()
@@ -189,6 +192,11 @@ def actuate_to_position(position_dict):
     print("Bot at given position!")
 
 
+def choose_x(x_list, block):
+    x = 0
+    return x
+
+
 def get_final_holes(im):
     keypoints = detector.detect(im)
     coordinates = []
@@ -225,23 +233,27 @@ def detect_holes(im):
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
     no_points = len(x_points)
-    if no_points == 2 and (not start_pick.wait(timeout=0.5)):
-        time.sleep(1)
+    if no_points >= 2 and (not start_pick.wait(timeout=0.5)):
         start_pick.set()
-        time.sleep(0.1)
+        print("Sending NLF")
         ArduinoSerial.write(bytes(NLF))
-        time.sleep(0.3)
+        print("NLF Sent")
+        time.sleep(1)
+        print("Pushing block")
         ArduinoSerial.write(bytes(PSH))
         time.sleep(0.3)
+        print("Pushed block")
         final_x_pts = get_final_holes(im)
-        threading.Thread(target=pickup_thread, args=[final_x_pts]).start()
+        shape = color_utils.get_color(im)
+        threading.Thread(target=pickup_thread, args=[final_x_pts, shape]).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
 
 
-def pickup_thread(x_points):
+def pickup_thread(x_points, shape):
     while start_pick.wait(timeout=0.5):
+        print("FOUND BLOCK : {}".format(shape))
         print("Found block! Stopping camera and starting actuation in 5 seconds")
         time.sleep(5)
         chosen_x = min((abs(x), x) for x in x_points)[1]
