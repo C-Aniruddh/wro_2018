@@ -44,7 +44,9 @@ def indices(lst, element, row_number):
 
 def get_feasible_coordinates(in_list):
     feasible = []
+    feasible2=[]
     for element in in_list:
         if 2 <= element[1] <= 5:
             feasible.append(element)
-    return feasible
+            feasible2.append([2-element[0],7-element[1]])
+    return feasible2

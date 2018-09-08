@@ -12,11 +12,12 @@ problem = TileSolver.TileSolver(
 if problem.solveProblem():
     print("Found solution: ")
     TileSolver.printMatrix(problem.solutionBoard)
+    TileSolver.printMatrix2(problem.solutionBoard)
     indexes = []
     row_number = 0
     print("Found element L at : ")
     for row in problem.solutionBoard.tolist():
-        index = tetris_utils.indices(row, 5, row_number)
+        index = tetris_utils.indices(row, 1, row_number)
         indexes.extend(index)
         row_number = row_number + 1
     print(indexes)

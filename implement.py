@@ -206,7 +206,9 @@ def choose_x(x_points, block):
 
     f = tetris_utils.get_feasible_coordinates(indexes)
     print(f)
-    chosen_x = min((abs(x), x) for x in x_points)[1]
+
+    # chosen_x = min((abs(x), x) for x in x_points)[1]
+
     return chosen_x
 
 
@@ -222,7 +224,7 @@ def get_final_holes(im):
         coordinates.append([x, y])
 
     sorted_coordinates = sorted(coordinates, key=lambda x: x[1], reverse=True)
-    for index in range(0, 1, 1):
+    for index in range(0, 2, 1):
         x_point = sorted_coordinates[index][0]
         x_points.append(x_point)
 
