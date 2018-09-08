@@ -1,5 +1,5 @@
 import serial
-ArduinoSerial = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
+ArduinoSerial = serial.Serial('/dev/ttyACM1', 9600, timeout=.1)
 
 while True:
     input_data = str(input('Enter your command : '))

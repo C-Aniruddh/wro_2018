@@ -28,7 +28,8 @@ bot_running.clear()
 cam = cv2.VideoCapture(config.CAMERA_ID)
 cam.set(3, 320)
 cam.set(4, 240)
-cam.set(cv2.CV_CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
 
 detector = cv2.SimpleBlobDetector_create()
 params = cv2.SimpleBlobDetector_Params()
@@ -83,7 +84,7 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 80, 'second': 120, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
+position_home = {'first': 90, 'second': 120, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
 position_pre_grip = {'first': 13, 'second': 134, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 120}
 position_grip_2 = {'first': 5, 'second': 130, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
 position_grip = {'first': 0, 'second': 125, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 120}
@@ -94,12 +95,12 @@ position_drop = {'first': 125, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b
 
 print("Initializing")
 
-angle_0 = 90
-angle_1 = 123
+angle_0 = 100
+angle_1 = 115
 angle_2 = 85
 angle_3 = 0
-angle_4 = 100
-angle_5 = 60
+angle_4 = 180
+angle_5 = 120
 
 pulse_0 = int(calculations.translate(angle_0, 0, 180, config.servo_min, config.servo_max))
 pulse_1 = int(calculations.translate(angle_1, 0, 180, config.servo_min, config.servo_max))
@@ -116,9 +117,9 @@ pwm.set_pwm(0, 0, pulse_0)
 time.sleep(0.1)
 pwm.set_pwm(3, 0, pulse_3)
 time.sleep(0.1)
-pwm.set_pwm(7, 0, pulse_4)
+pwm.set_pwm(15, 0, pulse_4)
 time.sleep(0.1)
-pwm.set_pwm(5, 0, pulse_5)
+pwm.set_pwm(7, 0, pulse_5)
 time.sleep(0.1)
 print("Done!")
 
@@ -182,9 +183,9 @@ def actuate_to_position(position_dict):
     time.sleep(0.1)
     actuate(range_4, 3)
     time.sleep(0.1)
-    actuate(range_5, 7)
+    actuate(range_5, 15)
     time.sleep(0.1)
-    actuate(range_6, 5)
+    actuate(range_6, 7)
     time.sleep(0.1)
     print("Bot at given position!")
 
@@ -219,13 +220,12 @@ def detect_holes(im):
 
     no_points = len(x_points)
     if no_points == 2 and (not start_pick.wait(timeout=0.5)):
-        time.sleep(1)
         start_pick.set()
-        time.sleep(0.1)
+        time.sleep(0.5)
         ArduinoSerial.write(bytes(NLF))
-        time.sleep(0.3)
+        time.sleep(0.5)
         ArduinoSerial.write(bytes(PSH))
-        time.sleep(0.3)
+        time.sleep(0.5)
         final_x_pts = get_final_holes(im)
         threading.Thread(target=pickup_thread, args=[final_x_pts]).start()
     opacity = 0.5
