@@ -98,5 +98,5 @@ def get_shape(index):
     elif index == 5:
         shape = "T"
     elif index == 6:
-        shape = "Inv-L"
+        shape = "J"
     return shape

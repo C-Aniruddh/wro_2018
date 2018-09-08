@@ -10,6 +10,8 @@ from RPi import GPIO
 import Adafruit_PCA9685
 import serial
 
+import eshita_god
+
 import color_utils
 
 ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
@@ -130,6 +132,9 @@ print("Done!")
 command = "GT-1-0"
 command = command.encode('utf-8')
 
+current_block = 0
+current_f_position = []
+
 
 def get_range(initial_value, final_value):
     if initial_value < final_value:
@@ -156,6 +161,7 @@ def actuate_to_position(position_dict):
     global angle_3
     global angle_4
     global angle_5
+    global position
 
     first = position_dict['first']
     second = position_dict['second']
@@ -163,6 +169,10 @@ def actuate_to_position(position_dict):
     fourth = position_dict['fourth']
     stack_b = position_dict['stack_b']
     stack_u = position_dict['stack_u']
+
+    if 'linear' in position_dict:
+        linear = position_dict['linear']
+        actuate_to_value(linear)
 
     range_1 = get_range(angle_0, first)
     range_2 = get_range(angle_1, second)
@@ -194,7 +204,8 @@ def actuate_to_position(position_dict):
     print("Bot at given position!")
 
 
-def choose_x(x_points, block):
+def choose_x(in_coordinates, block):
+    global current_f_position
     indexes = []
     row_number = 0
     block_id = tetris_utils.get_block_id(block)
@@ -205,10 +216,12 @@ def choose_x(x_points, block):
         row_number = row_number + 1
 
     f = tetris_utils.get_feasible_coordinates(indexes)
+    feasible_coordinate = f[0]
+    current_f_position = feasible_coordinate
     print(f)
 
     # chosen_x = min((abs(x), x) for x in x_points)[1]
-
+    chosen_x = eshita_god.get_correct_hole(in_coordinates, feasible_coordinate)
     return chosen_x
 
 
@@ -224,11 +237,11 @@ def get_final_holes(im):
         coordinates.append([x, y])
 
     sorted_coordinates = sorted(coordinates, key=lambda x: x[1], reverse=True)
-    for index in range(0, 2, 1):
+    """for index in range(0, 2, 1):
         x_point = sorted_coordinates[index][0]
-        x_points.append(x_point)
+        x_points.append(x_point)"""
 
-    return x_points
+    return sorted_coordinates
 
 
 def detect_holes(im):
@@ -249,6 +262,7 @@ def detect_holes(im):
 
     no_points = len(x_points)
     if no_points >= 2 and (not start_pick.wait(timeout=0.5)):
+        global current_block
         start_pick.set()
         print("Sending NLF")
         ArduinoSerial.write(bytes(NLF))
@@ -258,9 +272,12 @@ def detect_holes(im):
         ArduinoSerial.write(bytes(PSH))
         time.sleep(0.3)
         print("Pushed block")
-        final_x_pts = get_final_holes(im)
+        print("Waiting for 1 second before calculating points")
+        time.sleep(1)
+        final_pts = get_final_holes(im)
         shape = color_utils.get_color(im)
-        chosen_x = choose_x(final_x_pts, shape)
+        current_block = tetris_utils.get_block_id(shape)
+        chosen_x = choose_x(final_pts, shape)
         threading.Thread(target=pickup_thread, args=[chosen_x, shape]).start()
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
@@ -318,7 +335,7 @@ def actuate_to_value(in_value):
     return True
 
 
-def temp_position_handler(in_string):
+def temp_position_handler(in_string, f_position):
     if in_string == "home":
         actuate_to_position(position_home)
     elif in_string == "pre_grip":
@@ -334,7 +351,12 @@ def temp_position_handler(in_string):
     elif in_string == "place":
         actuate_to_position(position_place)
     elif in_string == "drop":
-        actuate_to_position(position_drop)
+        position_f = get_drop_position(f_position)
+        actuate_to_position(position_f)
+
+
+def get_drop_position(coordinate):
+    return position_drop
 
 
 def actuate_to_x(distance):
@@ -350,7 +372,7 @@ def actuate_to_x(distance):
             positions = ["home", "pre_grip", "grip_2", "grip", "lift", "lift_2", "place", "drop"]
 
             for position in positions:
-                temp_position_handler(position)
+                temp_position_handler(position, current_f_position)
                 print("Completed a position, sleeping for 1")
                 time.sleep(1)
 
@@ -387,6 +409,7 @@ def camera_vision():
             cv2.destroyAllWindows()
             break
         """
+
 
 threading.Thread(target=camera_vision).start()
 vbc = input("Enter any key to start : ")

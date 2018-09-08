@@ -18,7 +18,7 @@ def solve_tetris():
 def get_block_id(shape):
     if shape == "L":
         return 1
-    elif shape == "Inv-L":
+    elif shape == "J":
         return 2
     elif shape == "I":
         return 3
