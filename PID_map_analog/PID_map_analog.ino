@@ -19,14 +19,8 @@ String goto_id = "GT";
 String start_id = "GH";
 String push_id = "PSH";
 
-const byte LSA_val = A0;   // Connect AN output of LSA08 to analog pin 0
-const byte junctionPulse = 4;   // Connect JPULSE of LSA08 to pin 4
-int baseSpeed = 25;
-int maxSpeed = 30;
-int offset = 100;
-int Kp = 0.2;
-int Kd = 0;
-int setPoint = 0;
+const byte LSA_val = A13;   // Connect AN output of LSA08 to analog pin 0
+const byte junctionPulse = 9;   // Connect JPULSE of LSA08 to pin 4
 
 int curX, dstX;
 int curY, dstY;
@@ -37,7 +31,16 @@ int in12 = 31;
 int pwm1 = 11; //Blue
 int pwm2 = 10; //Grey
 int dir = 0;
-int lastError = 0;
+int blockNum = 4;
+
+float baseSpeed = 25;
+float  maxSpeed = 32;
+float offset = -5;
+float Kp = 1;
+float Kd = 0;
+float setPoint = 38.5;
+float lastError = 0;
+
 
 bool LNFS = false;
 bool modR = false;
@@ -65,20 +68,6 @@ void stopLineFollow() {
 void startLineFollow() {
   Serial.println("Start Line Follower");
   LNFS = true;
-}
-
-void setMotorDir() {
-  if (modR == false) {
-    digitalWrite(in11, LOW);
-    digitalWrite(in22, LOW);
-    digitalWrite(in12, HIGH);
-    digitalWrite(in21, HIGH);
-  } else {
-    digitalWrite(in11, HIGH);
-    digitalWrite(in22, HIGH);
-    digitalWrite(in12, LOW);
-    digitalWrite(in21, LOW);
-  }
 }
 
 void Forward(int spd1, int spd2) {
@@ -121,14 +110,21 @@ void BiLeft(int spd1, int spd2) {
   digitalWrite(in21, HIGH);
   digitalWrite(in12, LOW);
   digitalWrite(in22, HIGH);
-
+  lastError = 0;
   analogWrite(pwm1, spd1);
   analogWrite(pwm2, spd2);
   Serial.println("BIL :" + String(spd1) + String(spd2));
 }
 
-void Rotate_St() {
+void Rotate() {
+  startLineFollow();
+  BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+  while (float((analogRead(LSA_val)) * (70 / 921)) > 32 &&
+         (float(analogRead(LSA_val)) * (70 / 921) < 38)) {
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+  }
 }
+
 
 void wait() {
 
@@ -166,7 +162,7 @@ void YEqual() {
 
 void curXLower() {
   if (dir == 0) {
-    Forward(26, 26);
+    Forward(27, 27);
     dir = 0;
     curX++;
   } else if (dir == 1) {
@@ -176,31 +172,31 @@ void curXLower() {
         Reverse(30, 30);
         curY--;
       } else if (curX == 1 && curY == 0) {
-        BiLeft(47, 47);
-        delay(1800);
+        BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
+        delay(1750);
         Reverse(30, 30);
         curX++;
         dir = 2;
       }
     } else {
       modR = false;
-      BiRight(41, 46);
+      BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
       delay(3000);
-      Forward(26, 26);
+      Forward(28, 28);
       dir = 3;
       curY--;
 
     }
   } else if (dir == 2) {
-    BiRight(41, 46);
-    delay(1800);
-    Forward(26, 26);
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+    delay(1750);
+
     dir = 0;
     curX++;
   } else {
-    BiRight(41, 46);
-    delay(1800);
-    Forward(26, 26);
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+    delay(1750);
+    Forward(28, 28);
     dir = 0;
     curX++;
   }
@@ -209,25 +205,25 @@ void curXLower() {
 
 void curYLower() {
   if (dir == 0) {
-    BiRight(41, 46);
-    delay(1800);
-    Forward(26, 26);
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+    delay(1750);
+    Forward(28, 28);
     dir = 1;
     curY++;
   } else if (dir == 1) {
-    Forward(26, 26);
+    Forward(27, 27);
     dir = 1;
     curY++;
   } else if (dir == 2) {
-    BiLeft(47, 47);
-    delay(1800);
-    Forward(26, 26);
+    BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
+    delay(1750);
+    Forward(28, 28);
     dir = 1;
     curY++;
   } else {
-    BiRight(41, 46);
-    delay(1800);
-    Forward(26, 26);
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+    delay(1750);
+    Forward(28, 28);
     dir = 1;
     curY++;
   }
@@ -235,23 +231,23 @@ void curYLower() {
 
 void curYHigher() {
   if (dir == 0) {
-    Forward(26, 26);
+    Forward(27, 27);
     dir = 0;
     curY--;
   } else if (dir == 1) {
-    BiRight(41, 46);
-    delay(1800);
-    Forward(26, 26);
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+    delay(1750);
+    Forward(28, 28);
     dir = 3;
     curY--;
   } else if (dir == 2) {
-    BiLeft(47, 47);
-    delay(1800);
+    BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
+    delay(1750);
     dir = 3;
   } else {
-    BiRight(41, 46);
-    delay(1800);
-    Forward(26, 26);
+    BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
+    delay(1750);
+    Forward(28, 28);
     dir = 1;
     curY--;
   }
@@ -299,10 +295,10 @@ void junctionManager() {
 
 void LSA_Manager() {
 
+  Serial.println("Pulse : " + String(digitalRead(junctionPulse)));
+
   int readVal = analogRead(LSA_val);
   int positionVal  = ((float)readVal / 921) * 70;
-  Serial.println("Analog Val : " + String(positionVal));
-  Serial.println("Junction Pulse : " + String(digitalRead(junctionPulse)));
   // If no line is detected, stay at the position
   if (digitalRead(junctionPulse)) {
     wait();
@@ -310,14 +306,14 @@ void LSA_Manager() {
     junctionManager();
     delay(100);
   } else {
-    int error = positionVal - setPoint + offset;   // Calculate the deviation from position to the set point
-    int motorSpeed = Kp * error + Kd * (error - lastError);   // Applying formula of PID
+    float error = positionVal - setPoint + offset;   // Calculate the deviation from position to the set point
+    float motorSpeed = Kp * error + Kd * (error - lastError);   // Applying formula of PID
     lastError = error;    // Store current error as previous error for next iteration use
 
     // Adjust the motor speed based on calculated value
     // You might need to interchange the + and - sign if your robot move in opposite direction
-    int rightMotorSpeed = baseSpeed - motorSpeed;
-    int leftMotorSpeed = baseSpeed + motorSpeed;
+    float rightMotorSpeed = baseSpeed - motorSpeed;
+    float leftMotorSpeed = baseSpeed + motorSpeed;
 
     // If the speed of motor exceed max speed, set the speed to max speed
     if (rightMotorSpeed > maxSpeed) rightMotorSpeed = maxSpeed;
@@ -328,7 +324,7 @@ void LSA_Manager() {
     if (leftMotorSpeed < 0) leftMotorSpeed = 0;
 
     // Writing the motor speed value as output to hardware motor
-    Forward(rightMotorSpeed, leftMotorSpeed);
+    Forward(int(rightMotorSpeed), int(leftMotorSpeed + 5));
   }
 
   // Else if line detected, calculate the motor speed and apply
@@ -344,10 +340,10 @@ void Push() {
 }
 
 void goHome() {
-  Forward(26, 26);
-  delay(1800);
-  BiLeft(47, 47);
-  delay(1800);
+
+  delay(1750);
+  BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
+  delay(1750);
 }
 
 void setup() {
