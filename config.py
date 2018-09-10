@@ -5,7 +5,7 @@ FPS = 30
 CAMERA_ID = 0
 
 # Serial
-ARDUINO_SERIAL_PORT = "/dev/ttyACM1"
+ARDUINO_SERIAL_PORT = "/dev/ttyACM0"
 BAUD_RATE = 9600
 
 # 3x3
@@ -29,7 +29,7 @@ rvct = np.array([-0.10056308, 0.00848036, 1.59080042])
 tvct = np.array([37.47226676, -68.12233158, 256.68262234])
 
 # whatever unit is chosen here, the coordinates will be in the same unit
-distance_cam = 34
+distance_cam = 20.7
 
 # Configure min and max servo pulse lengths
 servo_min = 150  # Min pulse length out of 4096

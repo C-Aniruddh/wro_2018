@@ -8,6 +8,10 @@ import threading
 # block_pickup.clear()
 
 cam = cv2.VideoCapture(config.CAMERA_ID)
+cam.set(cv2.CAP_PROP_FPS, 30)
+cam.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*"YUYV"))
+cam.set(3, 320)
+cam.set(4, 240)
 
 detector = cv2.SimpleBlobDetector_create()
 params = cv2.SimpleBlobDetector_Params()
@@ -62,13 +66,13 @@ def camera_vision():
     # while not block_pickup.wait(timeout=5000):
     while True:
         _, frame = cam.read()
-        print(frame.shape[0], frame.shape[1])
-        scale_percent = 50  # percent of original size
+        # print(frame.shape[0], frame.shape[1])
+        """scale_percent = 50  # percent of original size
         width = int(frame.shape[1] * scale_percent / 100)
         height = int(frame.shape[0] * scale_percent / 100)
         dim = (width, height)
-        resized = cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)
-        holes = detect_holes(resized)
+        resized = cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)"""
+        holes = detect_holes(frame)
         cv2.imshow("holes", holes)
         kc = cv2.waitKey(1) & 0xff
         if kc == ord('q'):

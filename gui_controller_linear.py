@@ -59,8 +59,8 @@ def actuate(range_in, channel):
 pwm.set_pwm_freq(60)
 
 print("Initializing")
-angle_0 = 80
-angle_1 = 120
+angle_0 = 90
+angle_1 = 110
 angle_2 = 85
 angle_3 = 0
 angle_4 = 180
@@ -74,19 +74,42 @@ pulse_3 = int(translate(angle_3, 0, 180, servo_min, servo_max))
 pulse_4 = int(translate(angle_4, 0, 180, servo_min, servo_max))
 pulse_5 = int(translate(angle_5, 0, 180, servo_min, servo_max))
 
-pwm.set_pwm(2, 0, pulse_2)
-time.sleep(0.1)
-pwm.set_pwm(1, 0, pulse_1)
-time.sleep(0.1)
-pwm.set_pwm(0, 0, pulse_0)
-time.sleep(0.1)
-pwm.set_pwm(3, 0, pulse_3)
-time.sleep(0.1)
-pwm.set_pwm(15, 0, pulse_4)
-time.sleep(0.1)
-pwm.set_pwm(7, 0, pulse_5)
-time.sleep(0.1)
 
+pwm.set_pwm(2, 0, pulse_2)
+time.sleep(1)
+pwm.set_pwm(1, 0, pulse_1)
+time.sleep(1)
+pwm.set_pwm(0, 0, pulse_0)
+time.sleep(1)
+pwm.set_pwm(3, 0, pulse_3)
+time.sleep(1)
+pwm.set_pwm(15, 0, pulse_4)
+time.sleep(1)
+pwm.set_pwm(7, 0, pulse_5)
+time.sleep(1)
+
+
+"""
+range_1 = get_range(0, angle_0)
+range_2 = get_range(0, angle_1)
+range_3 = get_range(0, angle_2)
+range_4 = get_range(0, angle_3)
+range_5 = get_range(0, angle_4)
+range_6 = get_range(0, angle_5)
+
+actuate(range_3, 2)
+time.sleep(1)
+actuate(range_2, 1)
+time.sleep(1)
+actuate(range_1, 0)
+time.sleep(1)
+actuate(range_4, 3)
+time.sleep(1)
+actuate(range_5, 15)
+time.sleep(1)
+actuate(range_6, 7)
+time.sleep(1)
+"""
 print("Done!")
 
 
@@ -143,6 +166,7 @@ def go_home():
     angle_3 = int(0)
     angle_4 = int(180)
     angle_5 = int(120)
+    position = int(0)
 
     range_1 = get_range(angle_0_old, angle_0)
     range_2 = get_range(angle_1_old, angle_1)
@@ -162,6 +186,8 @@ def go_home():
     actuate(range_5, 15)
     time.sleep(1)
     actuate(range_6, 7)
+    time.sleep(1)
+    actuate_to_value(position)
     time.sleep(1)
     label.config(text="Home")
 

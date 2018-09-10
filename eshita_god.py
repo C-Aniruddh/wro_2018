@@ -112,4 +112,4 @@ def get_correct_hole(world_coordinates, feasible_coordinate):
     print("Our converted world co-ord (divide the above by 5): ", world3)
     y = world_original[index]
     print("\nRequired hole (", index, "th element ): ", y)
-    return y
+    return y[1]

@@ -63,7 +63,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-cam_offset = 2.5
+cam_offset = 1.1
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -83,6 +83,8 @@ NLF = NLF.encode('utf-8')
 PSH = "PSH"
 PSH = PSH.encode('utf-8')
 
+servo_speed = 3
+
 counter = 0
 clkLastState = GPIO.input(clk)
 print("Encoder at {}".format(clkLastState))
@@ -90,23 +92,23 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 80, 'second': 100, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
+position_home = {'first': 90, 'second': 110, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
 position_pre_grip = {'first': 13, 'second': 134, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
-position_grip_2 = {'first': 5, 'second': 130, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
-position_grip = {'first': -5, 'second': 125, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_grip_2 = {'first': 0, 'second': 130, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
+position_grip = {'first': -20, 'second': 125, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
 position_lift = {'first': 60, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
 position_lift_2 = {'first': 90, 'second': 160, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
-position_place = {'first': 125, 'second': -20, 'third': 85, 'fourth': 135, 'stack_b': 150, 'stack_u': 45}
-position_drop = {'first': 125, 'second': -20, 'third': 85, 'fourth': 0, 'stack_b': 150, 'stack_u': 45}
+position_place = {'first': 125, 'second': -20, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
+position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
 
 print("Initializing")
 
-angle_0 = 80
-angle_1 = 100
+angle_0 = 90
+angle_1 = 110
 angle_2 = 85
 angle_3 = 0
-angle_4 = 150
-angle_5 = 45
+angle_4 = 180
+angle_5 = 120
 
 pulse_0 = int(calculations.translate(angle_0, 0, 180, config.servo_min, config.servo_max))
 pulse_1 = int(calculations.translate(angle_1, 0, 180, config.servo_min, config.servo_max))
@@ -116,20 +118,20 @@ pulse_4 = int(calculations.translate(angle_4, 0, 180, config.servo_min, config.s
 pulse_5 = int(calculations.translate(angle_5, 0, 180, config.servo_min, config.servo_max))
 
 pwm.set_pwm(2, 0, pulse_2)
-time.sleep(0.1)
+time.sleep(1)
 pwm.set_pwm(1, 0, pulse_1)
-time.sleep(0.1)
+time.sleep(1)
 pwm.set_pwm(0, 0, pulse_0)
-time.sleep(0.1)
+time.sleep(1)
 pwm.set_pwm(3, 0, pulse_3)
-time.sleep(0.1)
+time.sleep(1)
 pwm.set_pwm(15, 0, pulse_4)
-time.sleep(0.1)
+time.sleep(1)
 pwm.set_pwm(7, 0, pulse_5)
-time.sleep(0.1)
+time.sleep(1)
 print("Done!")
 
-command = "GT-1-0"
+command = "GT-1-1"
 command = command.encode('utf-8')
 
 current_block = 0
@@ -138,9 +140,9 @@ current_f_position = []
 
 def get_range(initial_value, final_value):
     if initial_value < final_value:
-        range_1 = list(range(initial_value, final_value, 4))
+        range_1 = list(range(initial_value, final_value, servo_speed))
     else:
-        range_1 = list(range(initial_value, final_value, -4))
+        range_1 = list(range(initial_value, final_value, -servo_speed))
     range_1.append(final_value)
     return range_1
 
@@ -219,9 +221,13 @@ def choose_x(in_coordinates, block):
     feasible_coordinate = f[0]
     current_f_position = feasible_coordinate
     print(f)
+    x_points = []
+    for c in in_coordinates:
+        x_tmp = c[0]
+        x_points.append(x_tmp)
 
-    # chosen_x = min((abs(x), x) for x in x_points)[1]
-    chosen_x = eshita_god.get_correct_hole(in_coordinates, feasible_coordinate)
+    chosen_x = min((abs(x), x) for x in x_points)[1]
+    # chosen_x = eshita_god.get_correct_hole(in_coordinates, feasible_coordinate)
     return chosen_x
 
 
@@ -236,12 +242,12 @@ def get_final_holes(im):
         x = x + cam_offset
         coordinates.append([x, y])
 
-    sorted_coordinates = sorted(coordinates, key=lambda x: x[1], reverse=True)
+    # sorted_coordinates = sorted(coordinates, key=lambda x: x[1], reverse=True)
     """for index in range(0, 2, 1):
         x_point = sorted_coordinates[index][0]
         x_points.append(x_point)"""
-
-    return sorted_coordinates
+    print(coordinates)
+    return coordinates
 
 
 def detect_holes(im):
@@ -261,19 +267,19 @@ def detect_holes(im):
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
     no_points = len(x_points)
-    if no_points >= 2 and (not start_pick.wait(timeout=0.5)):
+    if no_points >= 3 and (not start_pick.wait(timeout=0.5)):
         global current_block
         start_pick.set()
         print("Sending NLF")
         ArduinoSerial.write(bytes(NLF))
         print("NLF Sent")
-        time.sleep(1)
-        print("Pushing block")
-        ArduinoSerial.write(bytes(PSH))
-        time.sleep(0.3)
-        print("Pushed block")
+        #time.sleep(1)
+        #print("Pushing block")
+        #ArduinoSerial.write(bytes(PSH))
+        #time.sleep(0.3)
+        # print("Pushed block")
         print("Waiting for 1 second before calculating points")
-        time.sleep(1)
+        time.sleep(1.5)
         final_pts = get_final_holes(im)
         shape = color_utils.get_color(im)
         current_block = tetris_utils.get_block_id(shape)
@@ -299,7 +305,7 @@ def pickup_thread(chosen_x, shape):
 def actuate_to_value(in_value):
     global counter, clkLastState
     if counter < in_value:
-        pulse = int(calculations.translate(108, 0, 180, config.servo_min, config.servo_max))
+        pulse = int(calculations.translate(107, 0, 180, config.servo_min, config.servo_max))
         while counter <= in_value:
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
@@ -377,7 +383,7 @@ def actuate_to_x(distance):
                 time.sleep(1)
 
             print("Going back home!")
-            temp_position_handler("home")
+            temp_position_handler("home", current_f_position)
             actuate_to_value(0)
             print("At home, sleeping for 2")
             time.sleep(2)
