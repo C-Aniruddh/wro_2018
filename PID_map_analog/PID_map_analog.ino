@@ -20,7 +20,7 @@ String start_id = "GH";
 String push_id = "PSH";
 
 const byte LSA_val = A13;   // Connect AN output of LSA08 to analog pin 0
-const byte junctionPulse = 9;   // Connect JPULSE of LSA08 to pin 4
+const byte junctionPulse = 10;   // Connect JPULSE of LSA08 to pin 4
 
 int curX, dstX;
 int curY, dstY;
@@ -28,17 +28,17 @@ int in11 = 25;
 int in21 = 24;
 int in22 = 30;
 int in12 = 31;
-int pwm1 = 11; //Blue
-int pwm2 = 10; //Grey
+int pwm1 = 9; //Blue
+int pwm2 = 8; //Grey
 int dir = 0;
-int blockNum = 4;
+int blockNum = 0;
 
 float baseSpeed = 25;
 float  maxSpeed = 32;
 float offset = -5;
-float Kp = 1;
+float Kp = 0.8;
 float Kd = 0;
-float setPoint = 38.5;
+float setPoint = 35;
 float lastError = 0;
 
 
@@ -173,7 +173,7 @@ void curXLower() {
         curY--;
       } else if (curX == 1 && curY == 0) {
         BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
-        delay(1750);
+        delay(1600);
         Reverse(30, 30);
         curX++;
         dir = 2;
@@ -189,13 +189,13 @@ void curXLower() {
     }
   } else if (dir == 2) {
     BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
 
     dir = 0;
     curX++;
   } else {
     BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     Forward(28, 28);
     dir = 0;
     curX++;
@@ -206,7 +206,7 @@ void curXLower() {
 void curYLower() {
   if (dir == 0) {
     BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     Forward(28, 28);
     dir = 1;
     curY++;
@@ -216,13 +216,13 @@ void curYLower() {
     curY++;
   } else if (dir == 2) {
     BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     Forward(28, 28);
     dir = 1;
     curY++;
   } else {
     BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     Forward(28, 28);
     dir = 1;
     curY++;
@@ -236,17 +236,17 @@ void curYHigher() {
     curY--;
   } else if (dir == 1) {
     BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     Forward(28, 28);
     dir = 3;
     curY--;
   } else if (dir == 2) {
     BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     dir = 3;
   } else {
     BiRight(41 + (2 * blockNum), 44 + (2 * blockNum));
-    delay(1750);
+    delay(1600);
     Forward(28, 28);
     dir = 1;
     curY--;
@@ -299,6 +299,7 @@ void LSA_Manager() {
 
   int readVal = analogRead(LSA_val);
   int positionVal  = ((float)readVal / 921) * 70;
+  Serial.println("LSA Value :" + String(positionVal));
   // If no line is detected, stay at the position
   if (digitalRead(junctionPulse)) {
     wait();
@@ -306,7 +307,7 @@ void LSA_Manager() {
     junctionManager();
     delay(100);
   } else {
-    float error = positionVal - setPoint + offset;   // Calculate the deviation from position to the set point
+    float error = positionVal - setPoint  + offset;   // Calculate the deviation from position to the set point
     float motorSpeed = Kp * error + Kd * (error - lastError);   // Applying formula of PID
     lastError = error;    // Store current error as previous error for next iteration use
 
@@ -324,7 +325,7 @@ void LSA_Manager() {
     if (leftMotorSpeed < 0) leftMotorSpeed = 0;
 
     // Writing the motor speed value as output to hardware motor
-    Forward(int(rightMotorSpeed), int(leftMotorSpeed + 5));
+    Forward(int(rightMotorSpeed), int(leftMotorSpeed + 8));
   }
 
   // Else if line detected, calculate the motor speed and apply
@@ -333,17 +334,11 @@ void LSA_Manager() {
   //  LNFS = true;
 }
 
-void Push() {
-  Forward(70, 70);
-  delay(100);
-  wait();
-}
-
 void goHome() {
-
-  delay(1750);
+  Forward(30, 30);
+  delay(1600);
   BiLeft(44 + (2 * blockNum), 41 + (2 * blockNum));
-  delay(1750);
+  delay(1600);
 }
 
 void setup() {
@@ -385,7 +380,6 @@ void loop() {
     } else if (command.startsWith(start_id)) {
       goHome();
     } else if (command.startsWith(push_id)) {
-      Push();
     } else {}
   }
   if (LNFS == true) {
