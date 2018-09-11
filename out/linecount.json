@@ -1,0 +1,337 @@
+{
+    "extension": "linecount",
+    "version": "0.1.7",
+    "workspace": "/home/aniruddh/PycharmProjects/wro_main",
+    "linecount": [
+        {
+            "version": "0.1.7",
+            "counttime": "2018-09-09 01:05:24",
+            "filesum": 52,
+            "codesum": 5411,
+            "commentsum": 363,
+            "blanksum": 1095,
+            "filelist": [
+                {
+                    "blank": 0,
+                    "code": 13,
+                    "comment": 0,
+                    "filename": ".idea/inspectionProfiles/Project_Default.xml"
+                },
+                {
+                    "blank": 0,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": ".idea/misc.xml"
+                },
+                {
+                    "blank": 0,
+                    "code": 8,
+                    "comment": 0,
+                    "filename": ".idea/modules.xml"
+                },
+                {
+                    "blank": 0,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": ".idea/vcs.xml"
+                },
+                {
+                    "blank": 0,
+                    "code": 771,
+                    "comment": 0,
+                    "filename": ".idea/workspace.xml"
+                },
+                {
+                    "blank": 0,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": ".idea/wro_main.iml"
+                },
+                {
+                    "filename": "__pycache__/calculations.cpython-35.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__/color_utils.cpython-35.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__/config.cpython-35.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__/tetris_utils.cpython-35.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__/tetris_utils.cpython-36.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__/TileSolver.cpython-35.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "__pycache__/TileSolver.cpython-36.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 8,
+                    "code": 20,
+                    "comment": 3,
+                    "filename": "calculations.py"
+                },
+                {
+                    "filename": "calculations.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 52,
+                    "code": 252,
+                    "comment": 8,
+                    "filename": "camera_fix.py"
+                },
+                {
+                    "blank": 52,
+                    "code": 258,
+                    "comment": 0,
+                    "filename": "camera_fix.py.save"
+                },
+                {
+                    "blank": 41,
+                    "code": 210,
+                    "comment": 8,
+                    "filename": "camera_pick.py"
+                },
+                {
+                    "blank": 29,
+                    "code": 76,
+                    "comment": 11,
+                    "filename": "ChooseX.py"
+                },
+                {
+                    "blank": 15,
+                    "code": 83,
+                    "comment": 4,
+                    "filename": "color_utils.py"
+                },
+                {
+                    "blank": 1,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "command.py"
+                },
+                {
+                    "blank": 10,
+                    "code": 14,
+                    "comment": 10,
+                    "filename": "config.py"
+                },
+                {
+                    "blank": 50,
+                    "code": 240,
+                    "comment": 8,
+                    "filename": "control_serial.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 19,
+                    "comment": 2,
+                    "filename": "coordinate_sort_test.py"
+                },
+                {
+                    "blank": 40,
+                    "code": 201,
+                    "comment": 8,
+                    "filename": "cv_new.py"
+                },
+                {
+                    "blank": 41,
+                    "code": 199,
+                    "comment": 8,
+                    "filename": "cv_pickup.py"
+                },
+                {
+                    "blank": 19,
+                    "code": 50,
+                    "comment": 13,
+                    "filename": "detect_holes.py"
+                },
+                {
+                    "blank": 15,
+                    "code": 77,
+                    "comment": 7,
+                    "filename": "dist.py"
+                },
+                {
+                    "blank": 16,
+                    "code": 41,
+                    "comment": 7,
+                    "filename": "encoder_cr.py"
+                },
+                {
+                    "blank": 28,
+                    "code": 77,
+                    "comment": 12,
+                    "filename": "eshita_god.py"
+                },
+                {
+                    "blank": 58,
+                    "code": 273,
+                    "comment": 8,
+                    "filename": "full_control.py"
+                },
+                {
+                    "blank": 36,
+                    "code": 152,
+                    "comment": 7,
+                    "filename": "gui_controller.py"
+                },
+                {
+                    "blank": 44,
+                    "code": 206,
+                    "comment": 7,
+                    "filename": "gui_controller_linear.py"
+                },
+                {
+                    "blank": 38,
+                    "code": 93,
+                    "comment": 7,
+                    "filename": "gui_realtime.py"
+                },
+                {
+                    "blank": 77,
+                    "code": 325,
+                    "comment": 8,
+                    "filename": "implement.py"
+                },
+                {
+                    "blank": 19,
+                    "code": 47,
+                    "comment": 12,
+                    "filename": "map.py"
+                },
+                {
+                    "blank": 24,
+                    "code": 84,
+                    "comment": 7,
+                    "filename": "new.py"
+                },
+                {
+                    "blank": 42,
+                    "code": 214,
+                    "comment": 8,
+                    "filename": "new_pickup.py"
+                },
+                {
+                    "blank": 50,
+                    "code": 240,
+                    "comment": 8,
+                    "filename": "new_setpoints.py"
+                },
+                {
+                    "blank": 18,
+                    "code": 44,
+                    "comment": 9,
+                    "filename": "no_process.py"
+                },
+                {
+                    "blank": 45,
+                    "code": 213,
+                    "comment": 8,
+                    "filename": "p_test.py"
+                },
+                {
+                    "blank": 21,
+                    "code": 94,
+                    "comment": 7,
+                    "filename": "pickup.py"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "pose_utils.py"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 2,
+                    "filename": "sort_test.py"
+                },
+                {
+                    "blank": 9,
+                    "code": 18,
+                    "comment": 21,
+                    "filename": "start-video-stream-w-opencv.py"
+                },
+                {
+                    "blank": 19,
+                    "code": 75,
+                    "comment": 17,
+                    "filename": "test_all.py"
+                },
+                {
+                    "blank": 20,
+                    "code": 93,
+                    "comment": 17,
+                    "filename": "test_back.py"
+                },
+                {
+                    "blank": 2,
+                    "code": 26,
+                    "comment": 0,
+                    "filename": "tetris_solver_test.py"
+                },
+                {
+                    "blank": 9,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": "tetris_utils.py"
+                },
+                {
+                    "blank": 66,
+                    "code": 164,
+                    "comment": 86,
+                    "filename": "TileSolver.py"
+                },
+                {
+                    "blank": 14,
+                    "code": 74,
+                    "comment": 7,
+                    "filename": "write_enc.py"
+                },
+                {
+                    "blank": 63,
+                    "code": 291,
+                    "comment": 8,
+                    "filename": "wro_start.py"
+                }
+            ]
+        }
+    ]
+}

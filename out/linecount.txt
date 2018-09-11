@@ -1,0 +1,64 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2018-09-09 01:05:24
+count workspace : /home/aniruddh/PycharmProjects/wro_main
+total files : 52
+total code lines : 5411
+total comment lines : 363
+total blank lines : 1095
+
+.idea/inspectionProfiles/Project_Default.xml, code is 13, comment is 0, blank is 0.
+.idea/misc.xml, code is 4, comment is 0, blank is 0.
+.idea/modules.xml, code is 8, comment is 0, blank is 0.
+.idea/vcs.xml, code is 6, comment is 0, blank is 0.
+.idea/workspace.xml, code is 771, comment is 0, blank is 0.
+.idea/wro_main.iml, code is 12, comment is 0, blank is 0.
+__pycache__/calculations.cpython-35.pyc, it is a binary file.
+__pycache__/color_utils.cpython-35.pyc, it is a binary file.
+__pycache__/config.cpython-35.pyc, it is a binary file.
+__pycache__/tetris_utils.cpython-35.pyc, it is a binary file.
+__pycache__/tetris_utils.cpython-36.pyc, it is a binary file.
+__pycache__/TileSolver.cpython-35.pyc, it is a binary file.
+__pycache__/TileSolver.cpython-36.pyc, it is a binary file.
+calculations.py, code is 20, comment is 3, blank is 8.
+calculations.pyc, it is a binary file.
+camera_fix.py, code is 252, comment is 8, blank is 52.
+camera_fix.py.save, code is 258, comment is 0, blank is 52.
+camera_pick.py, code is 210, comment is 8, blank is 41.
+ChooseX.py, code is 76, comment is 11, blank is 29.
+color_utils.py, code is 83, comment is 4, blank is 15.
+command.py, code is 6, comment is 0, blank is 1.
+config.py, code is 14, comment is 10, blank is 10.
+control_serial.py, code is 240, comment is 8, blank is 50.
+coordinate_sort_test.py, code is 19, comment is 2, blank is 4.
+cv_new.py, code is 201, comment is 8, blank is 40.
+cv_pickup.py, code is 199, comment is 8, blank is 41.
+detect_holes.py, code is 50, comment is 13, blank is 19.
+dist.py, code is 77, comment is 7, blank is 15.
+encoder_cr.py, code is 41, comment is 7, blank is 16.
+eshita_god.py, code is 77, comment is 12, blank is 28.
+full_control.py, code is 273, comment is 8, blank is 58.
+gui_controller.py, code is 152, comment is 7, blank is 36.
+gui_controller_linear.py, code is 206, comment is 7, blank is 44.
+gui_realtime.py, code is 93, comment is 7, blank is 38.
+implement.py, code is 325, comment is 8, blank is 77.
+map.py, code is 47, comment is 12, blank is 19.
+new.py, code is 84, comment is 7, blank is 24.
+new_pickup.py, code is 214, comment is 8, blank is 42.
+new_setpoints.py, code is 240, comment is 8, blank is 50.
+no_process.py, code is 44, comment is 9, blank is 18.
+p_test.py, code is 213, comment is 8, blank is 45.
+pickup.py, code is 94, comment is 7, blank is 21.
+pose_utils.py, code is 2, comment is 0, blank is 0.
+sort_test.py, code is 3, comment is 2, blank is 0.
+start-video-stream-w-opencv.py, code is 18, comment is 21, blank is 9.
+test_all.py, code is 75, comment is 17, blank is 19.
+test_back.py, code is 93, comment is 17, blank is 20.
+tetris_solver_test.py, code is 26, comment is 0, blank is 2.
+tetris_utils.py, code is 43, comment is 0, blank is 9.
+TileSolver.py, code is 164, comment is 86, blank is 66.
+write_enc.py, code is 74, comment is 7, blank is 14.
+wro_start.py, code is 291, comment is 8, blank is 63.
+===============================================================================
