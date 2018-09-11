@@ -143,6 +143,8 @@ command = command.encode('utf-8')
 current_block = ""
 current_f_position = []
 
+block_count = 0
+
 
 def get_range(initial_value, final_value):
     if initial_value < final_value:
@@ -404,7 +406,7 @@ def actuate_to_x(distance):
             print("Moved in X. Picking up in 3 seconds")
             time.sleep(3)
 
-            positions = ["home", "go_in", "go_in_2",  "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
+            positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
 
             for position in positions:
                 temp_position_handler(position, shape=current_block)
@@ -414,9 +416,22 @@ def actuate_to_x(distance):
             print('\x1b[6;30;46m' + 'Going back home!' + '\x1b[0m')
             temp_position_handler("home", shape=current_block)
             actuate_to_value(0)
+
             print('\x1b[3;30;42m' + 'At home, sleeping for 2' + '\x1b[0m')
             time.sleep(2)
-            ArduinoSerial.write(bytes(SLF))
+
+            # Increment block count
+            global block_count
+            block_count = block_count + 1
+
+            print('\x1b[6;37;41m' + 'Incrementing block count! Current block count : ' + str(block_count) + '\x1b[0m')
+
+            # If block count is final, go to stack position
+            if block_count == 6:
+                print('\x1b[6;37;41m' + '6 blocks picked bitches' + '\x1b[0m')
+                time.sleep(0.5)
+                ArduinoSerial.write(bytes(SLF))
+                time.sleep(0.5)
 
             print('\x1b[3;30;42m' + 'Sleep over, starting camera' + '\x1b[0m')
             block_pickup.clear()

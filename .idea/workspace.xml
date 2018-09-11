@@ -2,39 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d945433a-ca0d-4356-a9e1-a7c27cc2d8bb" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/color_nn.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/get_shape_implementation.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/ChooseX.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/camera_fix.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/camera_fix.py.save" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/camera_pick.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/control_serial.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/coordinate_sort_test.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/cv_new.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/cv_pickup.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/detect_holes.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/dist.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/encoder_cr.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/full_control.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gui_controller.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gui_controller_linear.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/gui_realtime.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/implement.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/map.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/new.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/new_pickup.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/new_setpoints.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/no_process.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/p_test.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/pickup.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/sort_test.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/start-video-stream-w-opencv.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/test_all.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/test_back.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/tetris_solver_test.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/write_enc.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/wro_start.py" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/get_shape_implementation.py" afterPath="$PROJECT_DIR$/get_shape_implementation.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -82,8 +50,8 @@
       <file leaf-file-name="get_shape_implementation.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/get_shape_implementation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="416" column="38" lean-forward="true" selection-start-line="416" selection-start-column="38" selection-end-line="416" selection-end-column="38" />
+            <state relative-caret-position="335">
+              <caret line="432" column="47" lean-forward="true" selection-start-line="432" selection-start-column="47" selection-end-line="432" selection-end-column="47" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -782,8 +750,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/get_shape_implementation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="416" column="38" lean-forward="true" selection-start-line="416" selection-start-column="38" selection-end-line="416" selection-end-column="38" />
+        <state relative-caret-position="335">
+          <caret line="432" column="47" lean-forward="true" selection-start-line="432" selection-start-column="47" selection-end-line="432" selection-end-column="47" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
