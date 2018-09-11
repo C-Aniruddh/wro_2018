@@ -46,12 +46,12 @@ def actuate(range_in, channel):
 pwm.set_pwm_freq(60)
 
 print("Initializing")
-angle_0 = 80
-angle_1 = 120
+angle_0 = 90
+angle_1 = 110
 angle_2 = 85
 angle_3 = 0
 angle_4 = 180
-angle_5 = 120
+angle_5 = 70
 
 pulse_0 = int(translate(angle_0, 0, 180, servo_min, servo_max))
 pulse_1 = int(translate(angle_1, 0, 180, servo_min, servo_max))
@@ -85,11 +85,11 @@ def go_home():
     angle_5_old = angle_5
 
     angle_0 = int(90)
-    angle_1 = int(120)
+    angle_1 = int(110)
     angle_2 = int(85)
     angle_3 = int(0)
     angle_4 = int(180)
-    angle_5 = int(120)
+    angle_5 = int(70)
 
     range_1 = get_range(angle_0_old, angle_0)
     range_2 = get_range(angle_1_old, angle_1)

@@ -116,7 +116,7 @@ print("Done!")
 def actuate_to_value(in_value):
     global counter, clkLastState
     if counter < in_value:
-        pulse = int(translate(106, 0, 180, servo_min, servo_max))
+        pulse = int(translate(107, 0, 180, servo_min, servo_max))
         while (counter <= in_value):
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
@@ -133,7 +133,7 @@ def actuate_to_value(in_value):
                 pwm.set_pwm(11, 0, 0)
                 break;
     else:
-        pulse = int(translate(96, 0, 180, servo_min, servo_max))
+        pulse = int(translate(95, 0, 180, servo_min, servo_max))
         while (counter >= in_value):
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
