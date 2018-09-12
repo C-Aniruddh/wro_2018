@@ -116,8 +116,8 @@ angle_0 = 90
 angle_1 = 110
 angle_2 = 85
 angle_3 = 0
-angle_4 = 180
-angle_5 = 120
+angle_4 = 145
+angle_5 = 50
 
 pulse_0 = int(calculations.translate(angle_0, 0, 180, config.servo_min, config.servo_max))
 pulse_1 = int(calculations.translate(angle_1, 0, 180, config.servo_min, config.servo_max))
