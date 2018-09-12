@@ -83,6 +83,9 @@ NLF = NLF.encode('utf-8')
 PSH = "PSH"
 PSH = PSH.encode('utf-8')
 
+SR = "SR"
+SR = SR.encode('utf-8')
+
 servo_speed = 3
 
 counter = 0
@@ -282,11 +285,11 @@ def detect_holes(im):
         print('\x1b[6;37;41m' + 'Sending NLF' + '\x1b[0m')
         ArduinoSerial.write(bytes(NLF))
         print('\x1b[6;37;41m' + 'NLF Sent' + '\x1b[0m')
-        # time.sleep(1)
-        # print("Pushing block")
-        # ArduinoSerial.write(bytes(PSH))
-        # time.sleep(0.3)
-        # print("Pushed block")
+        time.sleep(0.5)
+        print("Pushing block")
+        ArduinoSerial.write(bytes(PSH))
+        time.sleep(0.3)
+        print("Pushed block")
         print("Waiting for 1 second before calculating points")
         time.sleep(1.5)
         final_pts = get_final_holes(im)
@@ -368,10 +371,28 @@ def temp_position_handler(in_string, shape):
     elif in_string == "lift_2":
         actuate_to_position(position_lift_2)
     elif in_string == "place":
-        actuate_to_position(position_place)
+        pos = get_place_position(shape=shape)
+        actuate_to_position(pos)
     elif in_string == "drop":
         position_f = get_drop_position(shape)
         actuate_to_position(position_f)
+
+
+def get_place_position(shape):
+    if shape == "O":
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55, 'linear': 15}
+    elif shape == "J":
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 75, 'linear': -70}
+    elif shape == "L":
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 120, 'stack_u': 85, 'linear': 35}
+    elif shape == "S":
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 125, 'stack_u': 80, 'linear': -70}
+    elif shape == "Z":
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 135, 'stack_u': 100, 'linear': 35}
+    elif shape == "I":
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55, 'linear': 0}
+
+    return position_place_calc
 
 
 def get_drop_position(shape):
@@ -418,6 +439,7 @@ def actuate_to_x(distance):
             actuate_to_value(0)
 
             print('\x1b[3;30;42m' + 'At home, sleeping for 2' + '\x1b[0m')
+            ArduinoSerial.write(bytes(SR))
             time.sleep(2)
 
             # Increment block count
