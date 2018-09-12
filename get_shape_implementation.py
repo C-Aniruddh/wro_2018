@@ -95,14 +95,14 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 110, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 50}
-position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 50}
-position_go_in_2 = {'first': 21, 'second': 128, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 50}
-position_go_in_3 = {'first': 0, 'second': 128, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 50}
-position_grip = {'first': 0, 'second': 115, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 50}
-position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 50}
-position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 50}
-position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 50}
+position_home = {'first': 90, 'second': 110, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
+position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
+position_go_in_2 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
+position_go_in_3 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
+position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
+position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
+position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
+position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
 
 print()
