@@ -63,7 +63,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-cam_offset = 1.1
+cam_offset = 0.45
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -86,6 +86,8 @@ PSH = PSH.encode('utf-8')
 SR = "SR"
 SR = SR.encode('utf-8')
 
+ST = "ST"
+ST = ST.encode('utf-8')
 servo_speed = 3
 
 counter = 0
@@ -95,14 +97,14 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 110, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
+position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in_2 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in_3 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
+position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_lift_2 = {'first': 115, 'second': 30, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
 
 print()
@@ -113,7 +115,7 @@ labels = color_nn.load_labels(label_file="./labels.txt")
 print("Initializing")
 
 angle_0 = 90
-angle_1 = 110
+angle_1 = 105
 angle_2 = 85
 angle_3 = 0
 angle_4 = 145
@@ -127,21 +129,24 @@ pulse_4 = int(calculations.translate(angle_4, 0, 180, config.servo_min, config.s
 pulse_5 = int(calculations.translate(angle_5, 0, 180, config.servo_min, config.servo_max))
 
 pwm.set_pwm(2, 0, pulse_2)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(1, 0, pulse_1)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(0, 0, pulse_0)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(3, 0, pulse_3)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(15, 0, pulse_4)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(7, 0, pulse_5)
-time.sleep(1)
+time.sleep(0.2)
 print("Done!")
 
 command = "GT-1-1"
 command = command.encode('utf-8')
+
+command_stack = "GT-2-0"
+command_stack = command_stack.encode('utf-8')
 
 current_block = ""
 current_f_position = []
@@ -237,8 +242,11 @@ def choose_x(in_coordinates, block):
     for c in in_coordinates:
         x_tmp = c[0]
         x_points.append(x_tmp)
-
-    chosen_x = min((abs(x), x) for x in x_points)[1]
+    if block == "S" or block == "Z":
+        chosen_x = min(x_points)
+    else:
+        chosen_x = max(x_points)
+    # chosen_x = min((abs(x), x) for x in x_points)[1]
     # chosen_x = eshita_god.get_correct_hole(in_coordinates, feasible_coordinate)
     return chosen_x
 
@@ -279,21 +287,22 @@ def detect_holes(im):
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
     no_points = len(x_points)
-    if no_points >= 3 and (not start_pick.wait(timeout=0.5)):
+    if no_points >= 2 and (not start_pick.wait(timeout=0.5)):
         global current_block
         start_pick.set()
         print('\x1b[6;37;41m' + 'Sending NLF' + '\x1b[0m')
         ArduinoSerial.write(bytes(NLF))
         print('\x1b[6;37;41m' + 'NLF Sent' + '\x1b[0m')
-        time.sleep(0.5)
+        time.sleep(2)
         print("Pushing block")
         ArduinoSerial.write(bytes(PSH))
-        time.sleep(0.3)
+        time.sleep(1)
         print("Pushed block")
         print("Waiting for 1 second before calculating points")
-        time.sleep(1.5)
-        final_pts = get_final_holes(im)
-        cv2.imwrite("blocks.jpg", img=im)
+        time.sleep(2)
+        ret, inst_image = cam.read()
+        final_pts = get_final_holes(inst_image)
+        cv2.imwrite("blocks.jpg", img=inst_image)
         f_name = "./blocks.jpg"
         shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
         current_block = shape
@@ -309,7 +318,7 @@ def pickup_thread(chosen_x, shape):
         print("FOUND BLOCK : {}".format(shape))
         print('\x1b[3;30;42m' + 'Found block! Stopping camera and starting actuation in 3 seconds' + '\x1b[0m')
         print(chosen_x)
-        time.sleep(3)
+        time.sleep(1)
         block_pickup.set()
         camera_calculation.set()
         hole_detection.clear()
@@ -380,17 +389,17 @@ def temp_position_handler(in_string, shape):
 
 def get_place_position(shape):
     if shape == "O":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55, 'linear': 15}
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55, 'linear': 15}
     elif shape == "J":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 75, 'linear': -70}
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75, 'linear': -73}
     elif shape == "L":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 120, 'stack_u': 85, 'linear': 35}
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 120, 'stack_u': 85, 'linear': 35}
     elif shape == "S":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 125, 'stack_u': 80, 'linear': -70}
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 125, 'stack_u': 80, 'linear': -70}
     elif shape == "Z":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 135, 'stack_u': 100, 'linear': 35}
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 135, 'stack_u': 100, 'linear': 35}
     elif shape == "I":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55, 'linear': 0}
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55, 'linear': 0}
 
     return position_place_calc
 
@@ -401,7 +410,7 @@ def get_drop_position(shape):
                          'linear': 15}
     elif shape == "J":
         position_drop = {'first': 184, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 75,
-                         'linear': -70}
+                         'linear': -73}
     elif shape == "L":
         position_drop = {'first': 178, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 120, 'stack_u': 85,
                          'linear': 35}
@@ -449,11 +458,17 @@ def actuate_to_x(distance):
             print('\x1b[6;37;41m' + 'Incrementing block count! Current block count : ' + str(block_count) + '\x1b[0m')
 
             # If block count is final, go to stack position
-            if block_count == 6:
-                print('\x1b[6;37;41m' + '6 blocks picked bitches' + '\x1b[0m')
-                time.sleep(0.5)
+            if block_count == 2:
+                print('\x1b[6;37;41m' + '6 blocks picked' + '\x1b[0m')
+
+                time.sleep(1)
+                ArduinoSerial.write(bytes(command_stack))
+                time.sleep(1)
+
+                time.sleep(1)
                 ArduinoSerial.write(bytes(SLF))
-                time.sleep(0.5)
+                time.sleep(1)
+
 
             print('\x1b[3;30;42m' + 'Sleep over, starting camera' + '\x1b[0m')
             block_pickup.clear()
