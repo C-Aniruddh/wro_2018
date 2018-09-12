@@ -107,7 +107,7 @@ position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack
 
 print()
 print('\x1b[3;30;47m' + 'Starting TensorFlow, loading models' + '\x1b[0m')
-blocks_graph = color_nn.load_graph(model_file="./blocks_graph.pb")
+blocks_graph = color_nn.load_graph(model_file="./graph_final.pb")
 labels = color_nn.load_labels(label_file="./labels.txt")
 
 print("Initializing")
