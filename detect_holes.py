@@ -2,7 +2,7 @@ import cv2
 import config
 import calculations
 import threading
-
+import color_nn
 
 # block_pickup = threading.Event()
 # block_pickup.clear()
@@ -39,12 +39,18 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
+blocks_graph = color_nn.load_graph(model_file="./models/model/stack_graph.pb")
+labels = color_nn.load_labels(label_file="./models/model/stack_label.txt")
+
+max_x = 0
 
 def detect_holes(im):
     overlay = im.copy()
     keypoints = detector.detect(im)
     x_points = []
+    x_coords []
     for k in keypoints:
+        x_coords.append(int(k.pt[0]))
         x, y = calculations.world_coordinates(int(k.pt[0]), int(k.pt[1]))
         x_points.append(x)
         cv2.circle(overlay, (int(k.pt[0]), int(k.pt[1])), int(k.size / 2), (0, 0, 255), 2)
@@ -56,7 +62,7 @@ def detect_holes(im):
 
     # chosen_x = min((abs(x), x) for x in x_points)[1]
     # block_pickup.set()
-
+    max_x = max(x_coords)
     opacity = 0.5
     cv2.addWeighted(overlay, opacity, im, 1 - opacity, 0, im)
     return im
@@ -74,10 +80,14 @@ def camera_vision():
         resized = cv2.resize(frame, dim, interpolation=cv2.INTER_AREA)"""
         holes = detect_holes(frame)
         cv2.imshow("holes", holes)
+        crop = frame[80:240, 0:320]
+        cv2.imshow("crop", crop)
         kc = cv2.waitKey(1) & 0xff
         if kc == ord('q'):
-            break;
-
+            cv2.imwrite("1.jpg", frame)
+            shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name="1.jpg", label_instance=labels)
+            print(shape)
+            break
     cv2.destroyALlWindows()
     cam.release()
 
