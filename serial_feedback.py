@@ -101,15 +101,15 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 110, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
+position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in_2 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in_3 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55}
-position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 180, 'stack_u': 130}
+position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 180, 'stack_u': 130}
 
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
 
@@ -121,7 +121,7 @@ labels = color_nn.load_labels(label_file="./labels.txt")
 print("Initializing")
 
 angle_0 = 90
-angle_1 = 110
+angle_1 = 105
 angle_2 = 85
 angle_3 = 0
 angle_4 = 145
@@ -135,17 +135,17 @@ pulse_4 = int(calculations.translate(angle_4, 0, 180, config.servo_min, config.s
 pulse_5 = int(calculations.translate(angle_5, 0, 180, config.servo_min, config.servo_max))
 
 pwm.set_pwm(2, 0, pulse_2)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(1, 0, pulse_1)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(0, 0, pulse_0)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(3, 0, pulse_3)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(15, 0, pulse_4)
-time.sleep(1)
+time.sleep(0.2)
 pwm.set_pwm(7, 0, pulse_5)
-time.sleep(1)
+time.sleep(0.2)
 print("Done!")
 
 command = "GT-1-1"
@@ -295,7 +295,7 @@ def detect_holes(im):
                     0.5, (0, 0, 0), 1, cv2.LINE_AA)
 
     no_points = len(x_points)
-    if no_points >= 3 and (not start_pick.wait(timeout=0.5)):
+    if no_points >= 2 and (not start_pick.wait(timeout=0.5)):
         global current_block
         start_pick.set()
         print('\x1b[6;37;41m' + 'Sending NLF' + '\x1b[0m')
@@ -308,8 +308,9 @@ def detect_holes(im):
         print("Pushed block")
         print("Waiting for 1 second before calculating points")
         time.sleep(2)
-        final_pts = get_final_holes(im)
-        cv2.imwrite("blocks.jpg", img=im)
+        ret, inst_image = cam.read()
+        final_pts = get_final_holes(inst_image)
+        cv2.imwrite("blocks.jpg", img=inst_image)
         f_name = "./blocks.jpg"
         shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
         current_block = shape
@@ -398,22 +399,22 @@ def temp_position_handler(in_string, shape):
 
 def get_place_position(shape):
     if shape == "O":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55,
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55,
                                'linear': 15}
     elif shape == "J":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 75,
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75,
                                'linear': -70}
     elif shape == "L":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 120, 'stack_u': 85,
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 120, 'stack_u': 85,
                                'linear': 35}
     elif shape == "S":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 125, 'stack_u': 80,
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 125, 'stack_u': 80,
                                'linear': -70}
     elif shape == "Z":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 135, 'stack_u': 100,
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 135, 'stack_u': 100,
                                'linear': 35}
     elif shape == "I":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 135, 'stack_b': 145, 'stack_u': 55,
+        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55,
                                'linear': 0}
 
     return position_place_calc
@@ -434,7 +435,7 @@ def get_drop_position(shape):
                          'linear': -70}
     elif shape == "Z":
         position_drop = {'first': 185, 'second': 25, 'third': 85, 'fourth': 0, 'stack_b': 135, 'stack_u': 100,
-                         'linear': 15}
+                         'linear': 35}
     elif shape == "I":
         position_drop = {'first': 172, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55,
                          'linear': 0}
@@ -480,10 +481,12 @@ def actuate_to_x(distance):
                 time.sleep(1)
 
                 time.sleep(1)
-                ArduinoSerial.write(bytes(SLF))
+                ArduinoSerial.write(bytes(ST))
                 time.sleep(1)
 
                 sr_feedback.set()
+                threading.Thread(target=serial_feedback).start()
+
 
             print('\x1b[3;30;42m' + 'Sleep over, starting camera' + '\x1b[0m')
             block_pickup.clear()
@@ -522,6 +525,7 @@ def serial_feedback():
 
         while l_str != "E":
             l_str = line.decode('utf-8')
+            print(l_str)
 
             if l_str == "E":
                 print('\x1b[3;30;42m' + 'Placing now' + '\x1b[0m')
@@ -533,7 +537,6 @@ def serial_feedback():
 
 
 threading.Thread(target=camera_vision).start()
-threading.Thread(target=serial_feedback).start()
 
 vbc = input("Enter any key to start : ")
 print("Sleeping for 3")
