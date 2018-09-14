@@ -97,6 +97,9 @@ SR = SR.encode('utf-8')
 ST = "ST"
 ST = ST.encode('utf-8')
 
+GH = "GH"
+GH = GH.encode('utf-8')
+
 servo_speed = 3
 
 counter = 0
@@ -152,6 +155,7 @@ time.sleep(0.2)
 pwm.set_pwm(7, 0, pulse_5)
 time.sleep(0.2)
 print("Done!")
+print('\x1b[6;37;41m' + 'Waiting for button press' + '\x1b[0m')
 
 command = "GT-1-1"
 command = command.encode('utf-8')
@@ -545,11 +549,13 @@ def key_press():
         button_state = GPIO.input(23)
         if not button_state:
             print('Button Pressed...')
-            time.sleep(1)
+            time.sleep(0.2)
             print("START")
-            ArduinoSerial.write(bytes(SLF))
-            time.sleep(1.5)
+            ArduinoSerial.write(bytes(GH))
+            time.sleep(1)
             ArduinoSerial.write(bytes(command))
+            time.sleep(1)
+            ArduinoSerial.write(bytes(SLF))
 
 
 threading.Thread(target=camera_vision).start()
