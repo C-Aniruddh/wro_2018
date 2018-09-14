@@ -48,7 +48,7 @@ def detect_holes(im):
     overlay = im.copy()
     keypoints = detector.detect(im)
     x_points = []
-    x_coords []
+    x_coords = []
     for k in keypoints:
         x_coords.append(int(k.pt[0]))
         x, y = calculations.world_coordinates(int(k.pt[0]), int(k.pt[1]))

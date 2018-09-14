@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d945433a-ca0d-4356-a9e1-a7c27cc2d8bb" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/key_start_full.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/feedback_full.py" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/detect_holes.py" afterPath="$PROJECT_DIR$/detect_holes.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,18 +15,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="color_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/color_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="9" column="37" lean-forward="false" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="color_implement.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/color_implement.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -73,7 +62,7 @@
       <file leaf-file-name="serial_feedback.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/serial_feedback.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="502">
+            <state relative-caret-position="16771">
               <caret line="541" column="23" lean-forward="false" selection-start-line="541" selection-start-column="23" selection-end-line="541" selection-end-column="23" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -85,7 +74,7 @@
       <file leaf-file-name="key.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/key.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
+            <state relative-caret-position="217">
               <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="15" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -94,11 +83,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="key_start_full.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="key_start_full.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/key_start_full.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="543" column="38" lean-forward="true" selection-start-line="543" selection-start-column="38" selection-end-line="543" selection-end-column="38" />
+            <state relative-caret-position="592">
+              <caret line="553" column="0" lean-forward="true" selection-start-line="553" selection-start-column="0" selection-end-line="553" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="feedback_full.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/feedback_full.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="341">
+              <caret line="311" column="54" lean-forward="false" selection-start-line="311" selection-start-column="54" selection-end-line="311" selection-end-column="54" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="detect_holes.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/detect_holes.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="158">
+              <caret line="81" column="34" lean-forward="true" selection-start-line="81" selection-start-column="34" selection-end-line="81" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -112,16 +123,6 @@
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tetris_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tetris_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="20" column="22" lean-forward="false" selection-start-line="20" selection-start-column="22" selection-end-line="20" selection-end-column="22" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -149,6 +150,8 @@
       <find>Moving</find>
       <find>current_f_position</find>
       <find>current_block</find>
+      <find>time.sleep</find>
+      <find>ArduinoSerial</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -158,7 +161,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/no_process.py" />
-        <option value="$PROJECT_DIR$/detect_holes.py" />
         <option value="$PROJECT_DIR$/calculations.py" />
         <option value="$PROJECT_DIR$/dist.py" />
         <option value="$PROJECT_DIR$/cv_pickup.py" />
@@ -189,6 +191,8 @@
         <option value="$PROJECT_DIR$/get_shape_implementation.py" />
         <option value="$PROJECT_DIR$/serial_feedback.py" />
         <option value="$PROJECT_DIR$/key_start_full.py" />
+        <option value="$PROJECT_DIR$/detect_holes.py" />
+        <option value="$PROJECT_DIR$/feedback_full.py" />
       </list>
     </option>
   </component>
@@ -243,8 +247,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -437,8 +441,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/no_process.py" />
-    <entry file="file://$PROJECT_DIR$/detect_holes.py" />
     <entry file="file://$PROJECT_DIR$/cv_pickup.py" />
     <entry file="file://$PROJECT_DIR$/test_all.py" />
     <entry file="file://$PROJECT_DIR$/camera_pick.py" />
@@ -517,7 +519,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="20" lean-forward="false" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -536,7 +537,7 @@
         <state relative-caret-position="248">
           <caret line="9" column="37" lean-forward="false" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -596,7 +597,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/serial_feedback.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="502">
+        <state relative-caret-position="16771">
           <caret line="541" column="23" lean-forward="false" selection-start-line="541" selection-start-column="23" selection-end-line="541" selection-end-column="23" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
@@ -606,7 +607,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/key.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
+        <state relative-caret-position="217">
           <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="15" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -616,9 +617,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/key_start_full.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="543" column="38" lean-forward="true" selection-start-line="543" selection-start-column="38" selection-end-line="543" selection-end-column="38" />
+        <state relative-caret-position="592">
+          <caret line="553" column="0" lean-forward="true" selection-start-line="553" selection-start-column="0" selection-end-line="553" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detect_holes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="81" column="34" lean-forward="true" selection-start-line="81" selection-start-column="34" selection-end-line="81" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/feedback_full.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="311" column="54" lean-forward="false" selection-start-line="311" selection-start-column="54" selection-end-line="311" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
