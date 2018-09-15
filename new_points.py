@@ -106,14 +106,11 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in_2 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in_3 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_go_in = {'first': 5, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_grip = {'first': -5, 'second': 115, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
+position_up = {'first': 115, 'second': 160, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
+# position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
 position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 180, 'stack_u': 130}
 
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
@@ -392,7 +389,9 @@ def temp_position_handler(in_string, shape):
         actuate_to_position(position_lift)
     elif in_string == "lift_2":
         actuate_to_position(position_lift_2)
-    elif in_string == "place":
+    elif in_string == "up":
+        actuate_to_position(position_up)
+    elif in_string == "linear":
         pos = get_place_position(shape=shape)
         actuate_to_position(pos)
     elif in_string == "drop":
@@ -404,8 +403,8 @@ def temp_position_handler(in_string, shape):
 
 def get_place_position(shape):
     if shape == "O":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55,
-                               'linear': 15}
+        position_place_calc = {'first': 115, 'second': 10, 'third': 85, 'fourth': 150, 'stack_b': 110, 'stack_u': 110,
+                               'linear': -5}
     elif shape == "J":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75,
                                'linear': -70}
@@ -427,8 +426,8 @@ def get_place_position(shape):
 
 def get_drop_position(shape):
     if shape == "O":
-        position_drop = {'first': 172, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55,
-                         'linear': 15}
+        position_drop = {'first': 185, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 110, 'stack_u': 110,
+                         'linear': -5}
     elif shape == "J":
         position_drop = {'first': 184, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 75,
                          'linear': -70}
@@ -457,8 +456,8 @@ def actuate_to_x(distance):
             print("Moved in X. Picking up in 3 seconds")
             time.sleep(3)
 
-            positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
-
+            # positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
+            positions = ["home", "go_in", "grip", "up", "linear", "drop"]
             for position in positions:
                 temp_position_handler(position, shape=current_block)
                 print("Completed a position, sleeping for 1")

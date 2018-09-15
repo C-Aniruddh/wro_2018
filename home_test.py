@@ -14,7 +14,7 @@ import eshita_god
 
 import color_nn
 
-ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
+ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=1)
 
 block_pickup = threading.Event()
 block_pickup.clear()
@@ -530,10 +530,14 @@ def serial_feedback():
         print("Starting serial thread for feedback")
         line = ArduinoSerial.readline()
         l_str = line.decode('utf-8')
+        l_str = l_str.strip('\n')
+        l_str = l_str.strip('\r')
 
         while l_str != "E":
             l_str = line.decode('utf-8')
             print(l_str)
+            l_str = l_str.strip('\n')
+            l_str = l_str.strip('\r')
 
             if l_str == "E":
                 print('\x1b[3;30;42m' + 'Placing now' + '\x1b[0m')
@@ -551,7 +555,7 @@ def key_press():
             print('Button Pressed...')
             time.sleep(0.2)
             print("START")
-            ArduinoSerial.write(bytes(GH))
+            # ArduinoSerial.write(bytes(GH))
             time.sleep(1)
             ArduinoSerial.write(bytes(command))
             time.sleep(1)
@@ -560,3 +564,4 @@ def key_press():
 
 threading.Thread(target=camera_vision).start()
 threading.Thread(target=key_press).start()
+

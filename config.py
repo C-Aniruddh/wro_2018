@@ -29,7 +29,7 @@ rvct = np.array([-0.10056308, 0.00848036, 1.59080042])
 tvct = np.array([37.47226676, -68.12233158, 256.68262234])
 
 # whatever unit is chosen here, the coordinates will be in the same unit
-distance_cam = 20.7
+distance_cam = 23.8
 
 # Configure min and max servo pulse lengths
 servo_min = 150  # Min pulse length out of 4096
