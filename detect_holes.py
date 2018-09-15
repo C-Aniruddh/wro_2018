@@ -2,7 +2,7 @@ import cv2
 import config
 import calculations
 import threading
-import color_nn
+# import color_nn
 
 # block_pickup = threading.Event()
 # block_pickup.clear()
@@ -39,10 +39,11 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-blocks_graph = color_nn.load_graph(model_file="./models/model/stack_graph.pb")
-labels = color_nn.load_labels(label_file="./models/model/stack_label.txt")
+# blocks_graph = color_nn.load_graph(model_file="./models/model/stack_graph.pb")
+# labels = color_nn.load_labels(label_file="./models/model/stack_label.txt")
 
 max_x = 0
+
 
 def detect_holes(im):
     overlay = im.copy()
@@ -84,9 +85,9 @@ def camera_vision():
         cv2.imshow("crop", crop)
         kc = cv2.waitKey(1) & 0xff
         if kc == ord('q'):
-            cv2.imwrite("1.jpg", frame)
-            shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name="1.jpg", label_instance=labels)
-            print(shape)
+            # cv2.imwrite("1.jpg", frame)
+            # shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name="1.jpg", label_instance=labels)
+            # print(shape)
             break
     cv2.destroyALlWindows()
     cam.release()
