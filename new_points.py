@@ -14,7 +14,7 @@ import eshita_god
 
 import color_nn
 
-ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=1)
+ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
 
 block_pickup = threading.Event()
 block_pickup.clear()
@@ -69,7 +69,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-cam_offset = 0.45
+cam_offset = 0.5
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -109,14 +109,11 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in_2 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in_3 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_home = {'first': 90, 'second': 115, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_go_in = {'first': 5, 'second': 128, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_grip = {'first': -5, 'second': 115, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
+position_up = {'first': 115, 'second': 160, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
+# position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
 position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 180, 'stack_u': 130}
 
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
@@ -128,8 +125,8 @@ labels = color_nn.load_labels(label_file="./labels.txt")
 
 print("Initializing")
 
-angle_0 = 90
-angle_1 = 105
+angle_0 = 0
+angle_1 = 115
 angle_2 = 85
 angle_3 = 0
 angle_4 = 145
@@ -155,7 +152,6 @@ time.sleep(0.2)
 pwm.set_pwm(7, 0, pulse_5)
 time.sleep(0.2)
 print("Done!")
-print('\x1b[6;37;41m' + 'Waiting for button press' + '\x1b[0m')
 
 command = "GT-1-1"
 command = command.encode('utf-8')
@@ -185,6 +181,10 @@ def actuate(range_in, channel):
         pwm.set_pwm(channel, 0, pulse)
         time.sleep(0.05)
     print("Channel is {} at {}".format(channel, range_in[-1]))
+
+
+servo_0_range = get_range(0, 90)
+actuate(servo_0_range, 0)
 
 
 def actuate_to_position(position_dict):
@@ -321,7 +321,8 @@ def detect_holes(im):
         final_pts = get_final_holes(inst_image)
         cv2.imwrite("blocks.jpg", img=inst_image)
         f_name = "./blocks.jpg"
-        shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
+        # shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
+        shape = "J"
         current_block = shape
         chosen_x = choose_x(final_pts, shape)
         threading.Thread(target=pickup_thread, args=[chosen_x, shape]).start()
@@ -396,7 +397,9 @@ def temp_position_handler(in_string, shape):
         actuate_to_position(position_lift)
     elif in_string == "lift_2":
         actuate_to_position(position_lift_2)
-    elif in_string == "place":
+    elif in_string == "up":
+        actuate_to_position(position_up)
+    elif in_string == "linear":
         pos = get_place_position(shape=shape)
         actuate_to_position(pos)
     elif in_string == "drop":
@@ -408,8 +411,8 @@ def temp_position_handler(in_string, shape):
 
 def get_place_position(shape):
     if shape == "O":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55,
-                               'linear': 15}
+        position_place_calc = {'first': 115, 'second': 10, 'third': 85, 'fourth': 150, 'stack_b': 140, 'stack_u': 110,
+                               'linear': -5}
     elif shape == "J":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75,
                                'linear': -70}
@@ -431,8 +434,7 @@ def get_place_position(shape):
 
 def get_drop_position(shape):
     if shape == "O":
-        position_drop = {'first': 172, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55,
-                         'linear': 15}
+        position_drop = {'first': 185, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 140, 'stack_u': 110}
     elif shape == "J":
         position_drop = {'first': 184, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 75,
                          'linear': -70}
@@ -461,8 +463,8 @@ def actuate_to_x(distance):
             print("Moved in X. Picking up in 3 seconds")
             time.sleep(3)
 
-            positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
-
+            # positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
+            positions = ["home", "go_in", "grip", "up", "linear", "drop"]
             for position in positions:
                 temp_position_handler(position, shape=current_block)
                 print("Completed a position, sleeping for 1")
@@ -532,13 +534,11 @@ def serial_feedback():
         l_str = line.decode('utf-8')
         l_str = l_str.strip('\n')
         l_str = l_str.strip('\r')
-
         while l_str != "E":
             l_str = line.decode('utf-8')
             print(l_str)
             l_str = l_str.strip('\n')
             l_str = l_str.strip('\r')
-
             if l_str == "E":
                 print('\x1b[3;30;42m' + 'Placing now' + '\x1b[0m')
                 hole_detection.clear()
@@ -553,15 +553,15 @@ def key_press():
         button_state = GPIO.input(23)
         if not button_state:
             print('Button Pressed...')
-            time.sleep(0.2)
+            time.sleep(1)
             print("START")
             # ArduinoSerial.write(bytes(GH))
-            time.sleep(1)
+            # time.sleep(0.4)
+            # ArduinoSerial.write(bytes(SLF))
+            # time.sleep(1)
             ArduinoSerial.write(bytes(command))
-            time.sleep(1)
-            ArduinoSerial.write(bytes(SLF))
+            time.sleep(0.4)
 
 
 threading.Thread(target=camera_vision).start()
 threading.Thread(target=key_press).start()
-

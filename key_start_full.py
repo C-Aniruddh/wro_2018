@@ -69,7 +69,7 @@ params.minDistBetweenBlobs = 5
 # Create a detector with the parameters
 detector = cv2.SimpleBlobDetector_create(params)
 
-cam_offset = 0.45
+cam_offset = 0.8
 
 pwm = Adafruit_PCA9685.PCA9685()
 pwm.set_pwm_freq(60)
@@ -547,8 +547,8 @@ def key_press():
             print('Button Pressed...')
             time.sleep(1)
             print("START")
-            ArduinoSerial.write(bytes(SLF))
-            time.sleep(1.5)
+            # ArduinoSerial.write(bytes(SLF))
+            # time.sleep(1.5)
             ArduinoSerial.write(bytes(command))
 
 threading.Thread(target=camera_vision).start()
