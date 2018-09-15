@@ -10,7 +10,6 @@ from RPi import GPIO
 import Adafruit_PCA9685
 import serial
 
-
 import color_utils
 
 ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
@@ -108,15 +107,11 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-
-position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in_2 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_go_in_3 = {'first': 5, 'second': 122, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
-position_grip = {'first': 5, 'second': 115, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
-position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
+position_home = {'first': 90, 'second': 115, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_go_in = {'first': 5, 'second': 128, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_grip = {'first': -5, 'second': 115, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
+position_up = {'first': 115, 'second': 160, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
+# position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
 position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 180, 'stack_u': 130}
 
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
@@ -168,6 +163,16 @@ current_f_position = []
 block_count = 0
 
 
+def gripper_close():
+    pulse = int(calculations.translate(155, 0, 180, config.servo_min, config.servo_max))
+    pwm.set_pwm(3, 0, pulse)
+
+
+def gripper_open():
+    pulse = int(calculations.translate(0, 0, 180, config.servo_min, config.servo_max))
+    pwm.set_pwm(3, 0, pulse)
+
+
 def get_range(initial_value, final_value):
     if initial_value < final_value:
         range_1 = list(range(initial_value, final_value, servo_speed))
@@ -184,6 +189,13 @@ def actuate(range_in, channel):
         pwm.set_pwm(channel, 0, pulse)
         time.sleep(0.05)
     print("Channel is {} at {}".format(channel, range_in[-1]))
+
+
+servo_0_range = get_range(0, 160)
+actuate(servo_0_range, 0)
+time.sleep(2)
+servo_0_new = get_range(160, 100)
+actuate(servo_0_new, 0)
 
 
 def actuate_to_position(position_dict):
@@ -227,6 +239,10 @@ def actuate_to_position(position_dict):
     time.sleep(0.1)
     actuate(range_1, 0)
     time.sleep(0.1)
+    if fourth == 155:
+        gripper_close()
+    else:
+        gripper_open()
     actuate(range_4, 3)
     time.sleep(0.1)
     actuate(range_5, 15)
@@ -385,17 +401,9 @@ def temp_position_handler(in_string, shape):
         actuate_to_position(position_home)
     elif in_string == "go_in":
         actuate_to_position(position_go_in)
-    elif in_string == "go_in_2":
-        actuate_to_position(position_go_in_2)
-    elif in_string == "go_in_3":
-        actuate_to_position(position_go_in_3)
-    elif in_string == "grip":
-        actuate_to_position(position_grip)
-    elif in_string == "lift":
-        actuate_to_position(position_lift)
-    elif in_string == "lift_2":
-        actuate_to_position(position_lift_2)
-    elif in_string == "place":
+    elif in_string == "up":
+        actuate_to_position(position_up)
+    elif in_string == "linear":
         pos = get_place_position(shape=shape)
         actuate_to_position(pos)
     elif in_string == "drop":
@@ -407,8 +415,8 @@ def temp_position_handler(in_string, shape):
 
 def get_place_position(shape):
     if shape == "O":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55,
-                               'linear': 15}
+        position_place_calc = {'first': 115, 'second': 10, 'third': 85, 'fourth': 150, 'stack_b': 140, 'stack_u': 110,
+                               'linear': -5}
     elif shape == "J":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75,
                                'linear': -70}
@@ -421,8 +429,7 @@ def get_place_position(shape):
 
 def get_drop_position(shape):
     if shape == "O":
-        position_drop = {'first': 172, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55,
-                         'linear': 15}
+        position_drop = {'first': 185, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 140, 'stack_u': 110}
     elif shape == "J":
         position_drop = {'first': 184, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 75,
                          'linear': -70}
@@ -442,7 +449,7 @@ def actuate_to_x(distance):
             print("Moved in X. Picking up in 3 seconds")
             time.sleep(3)
 
-            positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
+            positions = ["home", "go_in", "grip", "up", "linear", "drop"]
 
             for position in positions:
                 temp_position_handler(position, shape=current_block)
@@ -539,5 +546,6 @@ def key_press():
             time.sleep(1)
             ArduinoSerial.write(bytes(SLF))
             threading.Thread(target=camera_vision).start()
+
 
 threading.Thread(target=key_press).start()
