@@ -540,11 +540,12 @@ def key_press():
             print('Button Pressed...')
             time.sleep(0.2)
             print("START")
+            ArduinoSerial.write(bytes(SLF))
+            time.sleep(1)
             ArduinoSerial.write(bytes(GH))
             time.sleep(1)
             ArduinoSerial.write(bytes(command))
             time.sleep(1)
-            ArduinoSerial.write(bytes(SLF))
             threading.Thread(target=camera_vision).start()
 
 
