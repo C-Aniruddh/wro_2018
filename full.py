@@ -12,9 +12,11 @@ import serial
 
 import eshita_god
 
-import color_nn
+# import color_nn
 
-ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
+import timeit
+
+ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=1)
 
 block_pickup = threading.Event()
 block_pickup.clear()
@@ -32,10 +34,16 @@ bot_running = threading.Event()
 bot_running.clear()
 
 sr_feedback = threading.Event()
-sr_feedback.clear()
+sr_feedback.set()
 
 f_key_press = threading.Event()
 f_key_press.set()
+
+reached_judge = threading.Event()
+reached_judge.clear()
+
+time_up = threading.Event()
+time_up.clear()
 
 cam = cv2.VideoCapture(config.CAMERA_ID)
 cam.set(3, 320)
@@ -97,7 +105,10 @@ SR = SR.encode('utf-8')
 ST = "ST"
 ST = ST.encode('utf-8')
 
-servo_speed = 3
+GH = "GH"
+GH = GH.encode('utf-8')
+
+servo_speed = 7
 
 counter = 0
 clkLastState = GPIO.input(clk)
@@ -115,7 +126,7 @@ position_lift = {'first': 70, 'second': 155, 'third': 85, 'fourth': 155, 'stack_
 position_lift_2 = {'first': 115, 'second': 90, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
 position_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55}
 position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 180, 'stack_u': 130}
-
+position_judge = {'first': 30, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 140, 'stack_u': 55}
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
 
 print()
@@ -140,18 +151,19 @@ pulse_4 = int(calculations.translate(angle_4, 0, 180, config.servo_min, config.s
 pulse_5 = int(calculations.translate(angle_5, 0, 180, config.servo_min, config.servo_max))
 
 pwm.set_pwm(2, 0, pulse_2)
-time.sleep(0.2)
+time.sleep(0.1)
 pwm.set_pwm(1, 0, pulse_1)
-time.sleep(0.2)
+time.sleep(0.1)
 pwm.set_pwm(0, 0, pulse_0)
-time.sleep(0.2)
+time.sleep(0.1)
 pwm.set_pwm(3, 0, pulse_3)
-time.sleep(0.2)
+time.sleep(0.1)
 pwm.set_pwm(15, 0, pulse_4)
-time.sleep(0.2)
+time.sleep(0.1)
 pwm.set_pwm(7, 0, pulse_5)
-time.sleep(0.2)
+time.sleep(0.1)
 print("Done!")
+print('\x1b[6;37;41m' + 'Waiting for button press' + '\x1b[0m')
 
 command = "GT-1-1"
 command = command.encode('utf-8')
@@ -179,7 +191,7 @@ def actuate(range_in, channel):
     for r in range_in:
         pulse = int(calculations.translate(r, 0, 180, config.servo_min, config.servo_max))
         pwm.set_pwm(channel, 0, pulse)
-        time.sleep(0.05)
+        time.sleep(0.2)
     print("Channel is {} at {}".format(channel, range_in[-1]))
 
 
@@ -219,17 +231,17 @@ def actuate_to_position(position_dict):
 
     print('\x1b[3;30;42m' + 'Actuating to given position' + '\x1b[0m')
     actuate(range_3, 2)
-    time.sleep(0.1)
+    time.sleep(0.05)
     actuate(range_2, 1)
-    time.sleep(0.1)
+    time.sleep(0.05)
     actuate(range_1, 0)
-    time.sleep(0.1)
+    time.sleep(0.05)
     actuate(range_4, 3)
-    time.sleep(0.1)
+    time.sleep(0.05)
     actuate(range_5, 15)
-    time.sleep(0.1)
+    time.sleep(0.05)
     actuate(range_6, 7)
-    time.sleep(0.1)
+    time.sleep(0.05)
     print('\x1b[3;30;42m' + 'Bot at given position!' + '\x1b[0m')
 
 
@@ -292,25 +304,27 @@ def detect_holes(im):
         x, y = calculations.world_coordinates(int(u), int(u))
         x = x + cam_offset
         x_points.append(x)
-        cv2.circle(overlay, (int(k.pt[0]), int(k.pt[1])), int(k.size / 2), (0, 0, 255), 2)
+        """cv2.circle(overlay, (int(k.pt[0]), int(k.pt[1])), int(k.size / 2), (0, 0, 255), 2)
         cv2.line(overlay, (int(k.pt[0]) - 20, int(k.pt[1])), (int(k.pt[0]) + 20, int(k.pt[1])), (0, 0, 0), 3)
         cv2.line(overlay, (int(k.pt[0]), int(k.pt[1]) - 20), (int(k.pt[0]), int(k.pt[1]) + 20), (0, 0, 0), 3)
         cv2.putText(overlay, str("({:.2f}, {:.2f})".format(float(x), float(y))), (int(k.pt[0]), int(k.pt[1])),
                     cv2.FONT_HERSHEY_DUPLEX,
-                    0.5, (0, 0, 0), 1, cv2.LINE_AA)
+                    0.5, (0, 0, 0), 1, cv2.LINE_AA)"""
 
     no_points = len(x_points)
     if no_points >= 2 and (not start_pick.wait(timeout=0.5)):
         global current_block
         start_pick.set()
         print('\x1b[6;37;41m' + 'Sending NLF' + '\x1b[0m')
+        sr_feedback.clear()
         ArduinoSerial.write(bytes(NLF))
         print('\x1b[6;37;41m' + 'NLF Sent' + '\x1b[0m')
-        time.sleep(2)
+        time.sleep(0.2)
         print("Pushing block")
         ArduinoSerial.write(bytes(PSH))
-        time.sleep(1)
+        time.sleep(0.2)
         print("Pushed block")
+        sr_feedback.set()
         print("Waiting for 1 second before calculating points")
         time.sleep(2)
         ret, inst_image = cam.read()
@@ -329,9 +343,8 @@ def detect_holes(im):
 def pickup_thread(chosen_x, shape):
     while start_pick.wait(timeout=0.5):
         print("FOUND BLOCK : {}".format(shape))
-        print('\x1b[3;30;42m' + 'Found block! Stopping camera and starting actuation in 3 seconds' + '\x1b[0m')
         print(chosen_x)
-        time.sleep(3)
+        time.sleep(0.1)
         block_pickup.set()
         camera_calculation.set()
         hole_detection.clear()
@@ -341,7 +354,7 @@ def pickup_thread(chosen_x, shape):
 def actuate_to_value(in_value):
     global counter, clkLastState
     if counter < in_value:
-        pulse = int(calculations.translate(107, 0, 180, config.servo_min, config.servo_max))
+        pulse = int(calculations.translate(105, 0, 180, config.servo_min, config.servo_max))
         while counter <= in_value:
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
@@ -358,7 +371,7 @@ def actuate_to_value(in_value):
                 pwm.set_pwm(11, 0, 0)
                 break
     else:
-        pulse = int(calculations.translate(95, 0, 180, config.servo_min, config.servo_max))
+        pulse = int(calculations.translate(96, 0, 180, config.servo_min, config.servo_max))
         while counter >= in_value:
             clkState = GPIO.input(clk)
             dtState = GPIO.input(dt)
@@ -400,6 +413,8 @@ def temp_position_handler(in_string, shape):
         actuate_to_position(position_f)
     elif in_string == "stack_place":
         actuate_to_position(position_stack_place)
+    elif in_string == "judge_piece":
+        actuate_to_position(position_judge)
 
 
 def get_place_position(shape):
@@ -454,15 +469,15 @@ def actuate_to_x(distance):
         done = actuate_to_value(int(steps))
 
         if done:
-            print("Moved in X. Picking up in 3 seconds")
-            time.sleep(3)
+            print("Moved in X. Picking up in 0.1 seconds")
+            time.sleep(0.1)
 
             positions = ["home", "go_in", "go_in_2", "go_in_3", "grip", "lift", "lift_2", "place", "drop"]
 
             for position in positions:
                 temp_position_handler(position, shape=current_block)
-                print("Completed a position, sleeping for 1")
-                time.sleep(1)
+                print("Completed a position, sleeping for 0.11")
+                time.sleep(0.1)
 
             print('\x1b[6;30;46m' + 'Going back home!' + '\x1b[0m')
             temp_position_handler("home", shape=current_block)
@@ -470,7 +485,7 @@ def actuate_to_x(distance):
 
             print('\x1b[3;30;42m' + 'At home, sleeping for 2' + '\x1b[0m')
             ArduinoSerial.write(bytes(SR))
-            time.sleep(2)
+            time.sleep(1)
 
             # Increment block count
             global block_count
@@ -481,22 +496,64 @@ def actuate_to_x(distance):
             # If block count is final, go to stack position
             if block_count == 2:
                 print('\x1b[6;37;41m' + '2 blocks picked' + '\x1b[0m')
-                time.sleep(1)
+                sr_feedback.clear()
+                time.sleep(0.2)
                 ArduinoSerial.write(bytes(command_stack))
-                time.sleep(1)
+                time.sleep(0.2)
 
-                time.sleep(1)
+                time.sleep(0.2)
                 ArduinoSerial.write(bytes(ST))
-                time.sleep(1)
+                time.sleep(0.2)
 
                 sr_feedback.set()
-                threading.Thread(target=serial_feedback).start()
+                # threading.Thread(target=serial_feedback).start()
 
             print('\x1b[3;30;42m' + 'Sleep over, starting camera' + '\x1b[0m')
             block_pickup.clear()
             start_pick.clear()
             hole_detection.set()
             camera_calculation.set()
+
+
+def select_solution(judge_block):
+    solution = "S0"
+    return solution
+
+
+def get_judge_block():
+    print('\x1b[6;37;41m' + 'Sending NLF' + '\x1b[0m')
+    sr_feedback.clear()
+    ArduinoSerial.write(bytes(NLF))
+    print('\x1b[6;37;41m' + 'NLF Sent' + '\x1b[0m')
+    time.sleep(0.2)
+    temp_position_handler("judge_piece", current_block)
+    time.sleep(0.2)
+    ret, inst_image = cam.read()
+    final_pts = get_final_holes(inst_image)
+    x_points = []
+
+    for coord in final_pts:
+        x_pt = coord[0]
+        x_points.append(x_pt)
+
+    print('\x1b[6;37;41m' + 'Sending SLF' + '\x1b[0m')
+    ArduinoSerial.write(bytes(SLF))
+    print('\x1b[6;37;41m' + 'SLF Sent' + '\x1b[0m')
+    time.sleep(0.2)
+    sr_feedback.set()
+
+    if x_points[0] > 0:
+        inst_image = inst_image[80:240, 160:320]
+        cv2.imwrite("judge.jpg", img=inst_image)
+        f_name = "./judge.jpg"
+        judge_block = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
+    else:
+        inst_image = inst_image[80:240, 0:160]
+        cv2.imwrite("judge.jpg", img=inst_image)
+        f_name = "./judge.jpg"
+        judge_block = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
+
+    return judge_block
 
 
 def camera_vision():
@@ -510,6 +567,9 @@ def camera_vision():
 
         if hole_detection.is_set():
             holes = detect_holes(frame)
+        elif reached_judge.is_set():
+            judge_block = get_judge_block()
+            reached_judge.clear()
         else:
             holes = frame
         """cv2.imshow("Holes", holes)
@@ -526,11 +586,12 @@ def serial_feedback():
         print("Starting serial thread for feedback")
         line = ArduinoSerial.readline()
         l_str = line.decode('utf-8')
-
+        l_str = l_str.strip('\n')
+        l_str = l_str.strip('\r')
         while l_str != "E":
             l_str = line.decode('utf-8')
-            print(l_str)
-
+            l_str = l_str.strip('\n')
+            l_str = l_str.strip('\r')
             if l_str == "E":
                 print('\x1b[3;30;42m' + 'Placing now' + '\x1b[0m')
                 hole_detection.clear()
@@ -539,17 +600,46 @@ def serial_feedback():
                 actuate_to_value(0)
                 print('\x1b[3;30;42m' + 'Stack placed' + '\x1b[0m')
 
+            elif l_str == "R":
+                reached_judge.set()
+
 
 def key_press():
     while f_key_press.wait(timeout=0.1):
         button_state = GPIO.input(23)
         if not button_state:
             print('Button Pressed...')
-            time.sleep(1)
+            time.sleep(0.2)
             print("START")
-            ArduinoSerial.write(bytes(SLF))
-            time.sleep(1.5)
+            sr_feedback.clear()
+            ArduinoSerial.write(bytes(GH))
+            time.sleep(0.4)
             ArduinoSerial.write(bytes(command))
+            time.sleep(0.2)
+            ArduinoSerial.write(bytes(SLF))
+            sr_feedback.set()
+            start_time = timeit.default_timer()
+            threading.Thread(target=count_time, args=[start_time]).start()
 
+
+def count_time(start_time):
+    while not time_up.wait(timeout=0.1):
+        stop_time = timeit.default_timer()
+        elapsed_time = int(stop_time - start_time)
+        if elapsed_time == 150:
+            time_up.set()
+            sr_feedback.clear()
+            print('\x1b[6;37;41m' + 'Time Up!' + '\x1b[0m')
+            time.sleep(0.2)
+            ArduinoSerial.write(bytes(command_stack))
+            time.sleep(0.2)
+
+            time.sleep(0.2)
+            ArduinoSerial.write(bytes(ST))
+            time.sleep(0.2)
+            sr_feedback.set()
+
+
+threading.Thread(target=serial_feedback).start()
 threading.Thread(target=camera_vision).start()
 threading.Thread(target=key_press).start()

@@ -10,9 +10,8 @@ from RPi import GPIO
 import Adafruit_PCA9685
 import serial
 
-import eshita_god
 
-import color_nn
+import color_utils
 
 ArduinoSerial = serial.Serial(config.ARDUINO_SERIAL_PORT, 9600, timeout=.1)
 
@@ -97,6 +96,9 @@ SR = SR.encode('utf-8')
 ST = "ST"
 ST = ST.encode('utf-8')
 
+GH = "GH"
+GH = GH.encode('utf-8')
+
 servo_speed = 3
 
 counter = 0
@@ -105,6 +107,7 @@ print("Encoder at {}".format(clkLastState))
 
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
+
 
 position_home = {'first': 90, 'second': 105, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
 position_go_in = {'first': 25, 'second': 125, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55}
@@ -118,10 +121,9 @@ position_stack_place = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 
 
 # position_drop = {'first': 150, 'second': -10, 'third': 85, 'fourth': 0, 'stack_b': 180, 'stack_u': 90, 'linear': 25}
 
-print()
-print('\x1b[3;30;47m' + 'Starting TensorFlow, loading models' + '\x1b[0m')
-blocks_graph = color_nn.load_graph(model_file="./graph_final.pb")
-labels = color_nn.load_labels(label_file="./labels.txt")
+# print('\x1b[3;30;47m' + 'Starting TensorFlow, loading models' + '\x1b[0m')
+# blocks_graph = color_nn.load_graph(model_file="./graph_final.pb")
+# labels = color_nn.load_labels(label_file="./labels.txt")
 
 print("Initializing")
 
@@ -152,6 +154,7 @@ time.sleep(0.2)
 pwm.set_pwm(7, 0, pulse_5)
 time.sleep(0.2)
 print("Done!")
+print('\x1b[6;37;41m' + 'Waiting for button press' + '\x1b[0m')
 
 command = "GT-1-1"
 command = command.encode('utf-8')
@@ -317,7 +320,7 @@ def detect_holes(im):
         final_pts = get_final_holes(inst_image)
         cv2.imwrite("blocks.jpg", img=inst_image)
         f_name = "./blocks.jpg"
-        shape = color_nn.get_block_shape(graph_instance=blocks_graph, file_name=f_name, label_instance=labels)
+        shape = color_utils.get_color(inst_image)
         current_block = shape
         chosen_x = choose_x(final_pts, shape)
         threading.Thread(target=pickup_thread, args=[chosen_x, shape]).start()
@@ -409,18 +412,9 @@ def get_place_position(shape):
     elif shape == "J":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75,
                                'linear': -70}
-    elif shape == "L":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 120, 'stack_u': 85,
-                               'linear': 35}
-    elif shape == "S":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 125, 'stack_u': 80,
-                               'linear': -70}
     elif shape == "Z":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 135, 'stack_u': 100,
                                'linear': 35}
-    elif shape == "I":
-        position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 55,
-                               'linear': 0}
 
     return position_place_calc
 
@@ -432,18 +426,9 @@ def get_drop_position(shape):
     elif shape == "J":
         position_drop = {'first': 184, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 75,
                          'linear': -70}
-    elif shape == "L":
-        position_drop = {'first': 178, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 120, 'stack_u': 85,
-                         'linear': 35}
-    elif shape == "S":
-        position_drop = {'first': 180, 'second': 0, 'third': 85, 'fourth': 0, 'stack_b': 125, 'stack_u': 80,
-                         'linear': -70}
     elif shape == "Z":
         position_drop = {'first': 185, 'second': 25, 'third': 85, 'fourth': 0, 'stack_b': 135, 'stack_u': 100,
                          'linear': 35}
-    elif shape == "I":
-        position_drop = {'first': 172, 'second': -5, 'third': 85, 'fourth': 0, 'stack_b': 145, 'stack_u': 55,
-                         'linear': 0}
     return position_drop
 
 
@@ -479,8 +464,8 @@ def actuate_to_x(distance):
             print('\x1b[6;37;41m' + 'Incrementing block count! Current block count : ' + str(block_count) + '\x1b[0m')
 
             # If block count is final, go to stack position
-            if block_count == 2:
-                print('\x1b[6;37;41m' + '2 blocks picked' + '\x1b[0m')
+            if block_count == 1:
+                print('\x1b[6;37;41m' + '1 block picked' + '\x1b[0m')
                 time.sleep(1)
                 ArduinoSerial.write(bytes(command_stack))
                 time.sleep(1)
@@ -526,11 +511,12 @@ def serial_feedback():
         print("Starting serial thread for feedback")
         line = ArduinoSerial.readline()
         l_str = line.decode('utf-8')
-
+        l_str = l_str.strip('\n')
+        l_str = l_str.strip('\r')
         while l_str != "E":
             l_str = line.decode('utf-8')
-            print(l_str)
-
+            l_str = l_str.strip('\n')
+            l_str = l_str.strip('\r')
             if l_str == "E":
                 print('\x1b[3;30;42m' + 'Placing now' + '\x1b[0m')
                 hole_detection.clear()
@@ -545,11 +531,13 @@ def key_press():
         button_state = GPIO.input(23)
         if not button_state:
             print('Button Pressed...')
-            time.sleep(1)
+            time.sleep(0.2)
             print("START")
-            ArduinoSerial.write(bytes(SLF))
-            time.sleep(1.5)
+            ArduinoSerial.write(bytes(GH))
+            time.sleep(1)
             ArduinoSerial.write(bytes(command))
+            time.sleep(1)
+            ArduinoSerial.write(bytes(SLF))
+            threading.Thread(target=camera_vision).start()
 
-threading.Thread(target=camera_vision).start()
 threading.Thread(target=key_press).start()
