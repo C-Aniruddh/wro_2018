@@ -5,7 +5,7 @@ import numpy as np
 # Playing video from file:
 # cap = cv2.VideoCapture('vtest.avi')
 # Capturing video from webcam:
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 cap.set(3, 320)
 cap.set(4, 240)
 cap.set(cv2.CAP_PROP_FPS, 30)

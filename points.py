@@ -109,7 +109,7 @@ print("Encoder at {}".format(clkLastState))
 min_x = calculations.world_coordinates(0, 0)[0]
 max_x = calculations.world_coordinates(320, 0)[0]
 
-position_home = {'first': 90, 'second': 115, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
+position_home = {'first': 90,  'second': 115, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
 position_go_in = {'first': 5, 'second': 128, 'third': 85, 'fourth': 0, 'stack_b': 100, 'stack_u': 100}
 position_grip = {'first': -5, 'second': 115, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
 position_up = {'first': 115, 'second': 160, 'third': 85, 'fourth': 150, 'stack_b': 100, 'stack_u': 100}
@@ -183,9 +183,11 @@ def actuate(range_in, channel):
     print("Channel is {} at {}".format(channel, range_in[-1]))
 
 
-servo_0_range = get_range(0, 90)
+servo_0_range = get_range(0, 160)
 actuate(servo_0_range, 0)
-
+time.sleep(2)
+servo_0_new = get_range(160, 100)
+actuate(servo_0_new, 0)
 
 def actuate_to_position(position_dict):
     global angle_0
@@ -415,7 +417,7 @@ def get_place_position(shape):
                                'linear': -5}
     elif shape == "J":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 145, 'stack_u': 75,
-                               'linear': -70}
+                               'linear': -64}
     elif shape == "L":
         position_place_calc = {'first': 135, 'second': -5, 'third': 85, 'fourth': 155, 'stack_b': 120, 'stack_u': 85,
                                'linear': 35}
